@@ -7,12 +7,27 @@ import { Pricing } from './components/pricing/pricing';
 import { AirportTransfer } from './components/airport-transfer/airport-transfer';
 import { WhyUs } from './components/why-us/why-us';
 import { CtaBanner } from './components/cta-banner/cta-banner';
+import { LocationMap } from './components/location-map/location-map';
 import { Footer } from './components/footer/footer';
 import { FloatingChat } from './components/floating-chat/floating-chat';
+import { BookingModal } from './components/booking-modal/booking-modal';
 
 @Component({
   selector: 'app-root',
-  imports: [Navbar, Hero, HowItWorks, Fleet, Pricing, AirportTransfer, WhyUs, CtaBanner, Footer, FloatingChat],
+  imports: [
+    Navbar,
+    Hero,
+    HowItWorks,
+    Fleet,
+    Pricing,
+    AirportTransfer,
+    WhyUs,
+    CtaBanner,
+    LocationMap,
+    Footer,
+    FloatingChat,
+    BookingModal,
+  ],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })

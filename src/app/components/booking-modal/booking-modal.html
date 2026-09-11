@@ -1,0 +1,79 @@
+@if (modal.isOpen()) {
+  <div class="modal-overlay" (click)="close()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <button type="button" class="modal-close" (click)="close()" aria-label="Fermer">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 6 6 18M6 6l12 12" />
+        </svg>
+      </button>
+
+      <span class="modal-eyebrow">Réservation rapide</span>
+      <h2>Réservez votre voiture</h2>
+      <p class="modal-sub">Choisissez votre véhicule et vos dates, on confirme le reste avec vous sur WhatsApp.</p>
+
+      <div class="vehicle-preview">
+        <img [src]="selectedCategory.image" [alt]="selectedCategory.name" />
+        <div class="vehicle-preview-info">
+          <span class="vehicle-preview-badge">{{ selectedCategory.badge }}</span>
+          <span class="vehicle-preview-name">{{ selectedCategory.name }}</span>
+          <span class="vehicle-preview-specs">{{ selectedCategory.seats }} places · {{ selectedCategory.transmission }}</span>
+        </div>
+      </div>
+
+      <div class="modal-field">
+        <label for="booking-car">Véhicule</label>
+        <select id="booking-car" name="booking-car" [(ngModel)]="selectedCar">
+          @for (category of categories; track category.name) {
+            <option [value]="category.name">{{ category.name }}</option>
+          }
+        </select>
+        <span class="modal-hint">{{ selectedCategory.priceLabel }} / jour</span>
+      </div>
+
+      <div class="modal-row">
+        <div class="modal-field">
+          <label for="booking-name">Nom complet *</label>
+          <input
+            id="booking-name"
+            name="booking-name"
+            type="text"
+            placeholder="Votre nom"
+            autocomplete="name"
+            required
+            [(ngModel)]="customerName"
+          />
+        </div>
+        <div class="modal-field">
+          <label for="booking-phone">Téléphone *</label>
+          <input
+            id="booking-phone"
+            name="booking-phone"
+            type="tel"
+            placeholder="55 606 106"
+            autocomplete="tel"
+            required
+            [(ngModel)]="customerPhone"
+          />
+        </div>
+      </div>
+
+      <div class="modal-row">
+        <div class="modal-field">
+          <label for="booking-start">Date de départ</label>
+          <input id="booking-start" name="booking-start" type="date" [min]="today" [(ngModel)]="startDate" />
+        </div>
+        <div class="modal-field">
+          <label for="booking-end">Date de retour</label>
+          <input id="booking-end" name="booking-end" type="date" [min]="startDate || today" [(ngModel)]="endDate" />
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-primary btn-lg btn-block" [disabled]="!isValid" (click)="confirm()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 12a8 8 0 1 1 3.2 6.4L4 20l1.1-3.5A7.96 7.96 0 0 1 4 12Z" />
+        </svg>
+        Réserver sur WhatsApp
+      </button>
+    </div>
+  </div>
+}

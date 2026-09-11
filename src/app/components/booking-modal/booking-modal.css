@@ -1,0 +1,201 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: oklch(20% 0.02 155 / 0.55);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  overflow-y: auto;
+  animation: fadeIn 0.18s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-card {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  background: var(--surface);
+  border-radius: 26px;
+  padding: 36px;
+  box-shadow: 0 40px 80px -24px oklch(20% 0.05 155 / 0.5);
+  animation: slideUp 0.22s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: none;
+  background: var(--bg-soft);
+  color: var(--ink-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.modal-close:hover {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+}
+
+.modal-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.01em;
+  padding: 6px 14px;
+  border-radius: 999px;
+  margin-bottom: 16px;
+}
+
+.modal-card h2 {
+  font-size: 1.5rem;
+}
+
+.modal-sub {
+  display: block;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  color: var(--ink-muted);
+  font-size: 0.95rem;
+}
+
+.vehicle-preview {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: linear-gradient(160deg, var(--bg-soft), var(--primary-light));
+  border-radius: 18px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.vehicle-preview img {
+  width: 92px;
+  height: 76px;
+  object-fit: contain;
+  flex: none;
+}
+
+.vehicle-preview-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.vehicle-preview-badge {
+  align-self: flex-start;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 0.66rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+}
+
+.vehicle-preview-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--ink);
+}
+
+.vehicle-preview-specs {
+  font-size: 0.8rem;
+  color: var(--ink-muted);
+  font-weight: 600;
+}
+
+.modal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.modal-field label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.modal-field select,
+.modal-field input {
+  width: 100%;
+  box-sizing: border-box;
+  height: 50px;
+  border-radius: 14px;
+  border: 1.5px solid var(--line);
+  background: var(--bg);
+  padding: 0 16px;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.modal-field select:focus,
+.modal-field input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.modal-hint {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--primary-dark);
+}
+
+.modal-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.modal-card .btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 480px) {
+  .modal-row {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-card {
+    padding: 28px 24px;
+  }
+}

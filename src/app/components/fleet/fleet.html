@@ -31,7 +31,7 @@
             </div>
             <div class="fleet-foot">
               <div class="fleet-price"><span class="amount">{{ category.priceLabel }}</span> <span class="unit">/ jour</span></div>
-              <a class="btn btn-primary btn-sm" [href]="category.whatsappLink" target="_blank" rel="noopener">Réserver</a>
+              <button type="button" class="btn btn-primary btn-sm" (click)="reserve(category.name)">Réserver</button>
             </div>
           </div>
         </div>
