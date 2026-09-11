@@ -1,0 +1,48 @@
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img src="assets/logo-footer.png" alt="Dada Rent Car" class="footer-logo" />
+        <p>Location de voitures à Tunis. Réservez votre véhicule sur WhatsApp et prenez la route.</p>
+        <div class="social-row">
+          <a [href]="info.facebook" target="_blank" rel="noopener" aria-label="Facebook">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 8h-2a2 2 0 0 0-2 2v3H8v3h3v7h3v-7h3l1-3h-4v-2.5a1 1 0 0 1 1-1H18V8Z" />
+            </svg>
+          </a>
+          <a [href]="whatsappLink" target="_blank" rel="noopener" aria-label="WhatsApp">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 12a8 8 0 1 1 3.2 6.4L4 20l1.1-3.5A7.96 7.96 0 0 1 4 12Z" />
+            </svg>
+          </a>
+          <a [href]="'mailto:' + info.email" aria-label="Email">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="5" width="18" height="14" rx="2" />
+              <path d="m4 7 8 6 8-6" />
+            </svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Entreprise</h4>
+        <a href="#top">Accueil</a>
+        <a href="#fleet">Flotte</a>
+        <a href="#pricing">Tarifs</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <a [href]="'tel:' + info.phone">{{ info.phone }}</a>
+        <a [href]="'mailto:' + info.email">{{ info.email }}</a>
+        <span class="footer-address">{{ info.address }}</span>
+        <span class="footer-hours">{{ info.hours }}</span>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© {{ year }} Dada Rent Car — une marque FaceMoney.</span>
+      <span>
+        <a href="#">Confidentialité</a> &nbsp;·&nbsp; <a href="#">Conditions</a>
+      </span>
+    </div>
+  </div>
+</footer>

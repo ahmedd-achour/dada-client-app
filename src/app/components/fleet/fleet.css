@@ -1,0 +1,102 @@
+.fleet {
+  background: var(--bg-soft);
+}
+
+.fleet-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 26px;
+}
+
+.fleet-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.fleet-media {
+  height: 170px;
+  background: linear-gradient(160deg, var(--bg-soft), var(--primary-light));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 16px;
+}
+
+.fleet-media img {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.fleet-badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+}
+
+.fleet-body {
+  padding: 24px 24px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+}
+
+.fleet-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.fleet-specs {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  color: var(--ink-muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.fleet-specs span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fleet-specs svg {
+  color: var(--primary);
+}
+
+.fleet-foot {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 6px;
+}
+
+.fleet-price .amount {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: var(--ink);
+}
+
+.fleet-price .unit {
+  font-size: 0.78rem;
+  color: var(--ink-muted);
+  font-weight: 600;
+}

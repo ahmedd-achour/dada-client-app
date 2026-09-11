@@ -1,0 +1,44 @@
+<section class="section-pad why-section">
+  <div class="wrap why-inner">
+    <div class="why-media">
+      <img src="assets/agency-office.png" alt="Agence Dada Rent Car à Aouina, Tunis" />
+    </div>
+    <div class="why-content">
+      <div class="section-head why-head">
+        <h2>Une agence réelle, pas juste une appli</h2>
+        <p>À Aouina, Tunis — {{ address }}.</p>
+      </div>
+      <div class="why-list">
+        @for (benefit of benefits; track benefit.title) {
+          <div class="why-item">
+            <div class="why-icon">
+              @switch (benefit.icon) {
+                @case ('pin') {
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11Z" />
+                    <circle cx="12" cy="10" r="2.5" />
+                  </svg>
+                }
+                @case ('clock') {
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M12 7v5l3.5 2" />
+                  </svg>
+                }
+                @case ('chat') {
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 12a8 8 0 1 1 3.2 6.4L4 20l1.1-3.5A7.96 7.96 0 0 1 4 12Z" />
+                  </svg>
+                }
+              }
+            </div>
+            <div>
+              <h3>{{ benefit.title }}</h3>
+              <p>{{ benefit.description }}</p>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</section>
