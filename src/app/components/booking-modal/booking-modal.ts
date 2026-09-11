@@ -1,4 +1,4 @@
-import { Component, HostListener, effect } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild, effect } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BookingModalService } from '../../shared/booking-modal.service';
 import { FLEET_CATEGORIES } from '../../shared/fleet-categories';
@@ -14,11 +14,15 @@ export class BookingModal {
   protected readonly categories = FLEET_CATEGORIES;
   protected readonly today = new Date().toISOString().slice(0, 10);
 
+  @ViewChild('vehicleField') protected vehicleFieldRef?: ElementRef<HTMLElement>;
+
   protected selectedCar = '';
   protected customerName = '';
   protected customerPhone = '';
+  protected promoCode = '';
   protected startDate = '';
   protected endDate = '';
+  protected showVehiclePicker = false;
 
   constructor(protected readonly modal: BookingModalService) {
     effect(() => {
@@ -26,21 +30,45 @@ export class BookingModal {
         this.selectedCar = this.modal.presetCategory() ?? this.categories[0].name;
         this.customerName = '';
         this.customerPhone = '';
+        this.promoCode = '';
         this.startDate = '';
         this.endDate = '';
+        this.showVehiclePicker = false;
       }
     });
   }
 
   @HostListener('document:keydown.escape')
   protected onEscape(): void {
-    if (this.modal.isOpen()) {
+    if (this.showVehiclePicker) {
+      this.showVehiclePicker = false;
+    } else if (this.modal.isOpen()) {
       this.modal.close();
+    }
+  }
+
+  @HostListener('document:click', ['$event'])
+  protected onDocumentClick(event: MouseEvent): void {
+    if (
+      this.showVehiclePicker &&
+      this.vehicleFieldRef &&
+      !this.vehicleFieldRef.nativeElement.contains(event.target as Node)
+    ) {
+      this.showVehiclePicker = false;
     }
   }
 
   protected get selectedCategory() {
     return this.categories.find((c) => c.name === this.selectedCar) ?? this.categories[0];
+  }
+
+  protected toggleVehiclePicker(): void {
+    this.showVehiclePicker = !this.showVehiclePicker;
+  }
+
+  protected selectVehicle(name: string): void {
+    this.selectedCar = name;
+    this.showVehiclePicker = false;
   }
 
   protected get isValid(): boolean {
@@ -60,7 +88,10 @@ export class BookingModal {
       const [year, month, day] = value.split('-');
       return `${day}/${month}/${year}`;
     };
-    const message = `Bonjour, je m'appelle ${this.customerName.trim()} (${this.customerPhone.trim()}).\nJe souhaite réserver : ${this.selectedCar}\nDu ${formatDate(this.startDate)} au ${formatDate(this.endDate)}`;
+    let message = `Bonjour, je m'appelle ${this.customerName.trim()} (${this.customerPhone.trim()}).\nJe souhaite réserver : ${this.selectedCar}\nDu ${formatDate(this.startDate)} au ${formatDate(this.endDate)}`;
+    if (this.promoCode.trim()) {
+      message += `\nCode promo : ${this.promoCode.trim()}`;
+    }
     return waLink(message);
   }
 
@@ -73,7 +104,7 @@ export class BookingModal {
       return;
     }
     // TODO: once Firebase is wired up, persist { name: customerName, phone: customerPhone,
-    // category: selectedCar, startDate, endDate } as a lead document here.
+    // category: selectedCar, startDate, endDate, promoCode } as a lead document here.
     window.open(this.whatsappHref, '_blank', 'noopener');
     this.modal.close();
   }

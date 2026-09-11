@@ -91,14 +91,31 @@
   font-size: 0.95rem;
 }
 
+.vehicle-field {
+  position: relative;
+}
+
 .vehicle-preview {
   display: flex;
   align-items: center;
+  width: 100%;
   gap: 16px;
   background: linear-gradient(160deg, var(--bg-soft), var(--primary-light));
   border-radius: 18px;
   padding: 12px;
-  margin-bottom: 16px;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  transition: border-color 0.15s ease, transform 0.1s ease;
+}
+
+.vehicle-preview:hover {
+  border-color: var(--primary);
+}
+
+.vehicle-preview:active {
+  transform: scale(0.99);
 }
 
 .vehicle-preview img {
@@ -113,6 +130,13 @@
   flex-direction: column;
   gap: 3px;
   min-width: 0;
+  flex: 1;
+}
+
+.vehicle-preview-chevron {
+  flex: none;
+  color: var(--primary-dark);
+  opacity: 0.6;
 }
 
 .vehicle-preview-badge {
@@ -176,6 +200,85 @@
 .modal-hint {
   font-size: 0.8rem;
   font-weight: 600;
+  color: var(--primary-dark);
+}
+
+.optional-tag {
+  font-weight: 500;
+  color: var(--ink-muted);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.vehicle-picker {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 10;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 8px;
+  max-height: 280px;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px -16px oklch(20% 0.05 155 / 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.vehicle-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-radius: 12px;
+  padding: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+}
+
+.vehicle-option:hover {
+  background: var(--bg-soft);
+}
+
+.vehicle-option.active {
+  background: var(--primary-light);
+}
+
+.vehicle-option img {
+  width: 52px;
+  height: 40px;
+  object-fit: contain;
+  flex: none;
+}
+
+.vehicle-option-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.vehicle-option-name {
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--ink);
+}
+
+.vehicle-option-price {
+  font-size: 0.75rem;
+  color: var(--ink-muted);
+  font-weight: 600;
+}
+
+.vehicle-option svg {
+  flex: none;
   color: var(--primary-dark);
 }
 

@@ -11,23 +11,51 @@
       <h2>Réservez votre voiture</h2>
       <p class="modal-sub">Choisissez votre véhicule et vos dates, on confirme le reste avec vous sur WhatsApp.</p>
 
-      <div class="vehicle-preview">
-        <img [src]="selectedCategory.image" [alt]="selectedCategory.name" />
-        <div class="vehicle-preview-info">
-          <span class="vehicle-preview-badge">{{ selectedCategory.badge }}</span>
-          <span class="vehicle-preview-name">{{ selectedCategory.name }}</span>
-          <span class="vehicle-preview-specs">{{ selectedCategory.seats }} places · {{ selectedCategory.transmission }}</span>
-        </div>
-      </div>
-
-      <div class="modal-field">
-        <label for="booking-car">Véhicule</label>
-        <select id="booking-car" name="booking-car" [(ngModel)]="selectedCar">
-          @for (category of categories; track category.name) {
-            <option [value]="category.name">{{ category.name }}</option>
-          }
-        </select>
+      <div class="modal-field vehicle-field" #vehicleField>
+        <button
+          type="button"
+          class="vehicle-preview"
+          aria-haspopup="listbox"
+          [attr.aria-expanded]="showVehiclePicker"
+          (click)="toggleVehiclePicker()"
+        >
+          <img [src]="selectedCategory.image" [alt]="selectedCategory.name" />
+          <div class="vehicle-preview-info">
+            <span class="vehicle-preview-badge">{{ selectedCategory.badge }}</span>
+            <span class="vehicle-preview-name">{{ selectedCategory.name }}</span>
+            <span class="vehicle-preview-specs">{{ selectedCategory.seats }} places · {{ selectedCategory.transmission }}</span>
+          </div>
+          <svg class="vehicle-preview-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m8 9 4-4 4 4M8 15l4 4 4-4" />
+          </svg>
+        </button>
         <span class="modal-hint">{{ selectedCategory.priceLabel }} / jour</span>
+
+        @if (showVehiclePicker) {
+          <div class="vehicle-picker" role="listbox">
+            @for (category of categories; track category.name) {
+              <button
+                type="button"
+                class="vehicle-option"
+                role="option"
+                [class.active]="category.name === selectedCar"
+                [attr.aria-selected]="category.name === selectedCar"
+                (click)="selectVehicle(category.name)"
+              >
+                <img [src]="category.image" [alt]="category.name" />
+                <span class="vehicle-option-info">
+                  <span class="vehicle-option-name">{{ category.name }}</span>
+                  <span class="vehicle-option-price">{{ category.priceLabel }} / jour</span>
+                </span>
+                @if (category.name === selectedCar) {
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                }
+              </button>
+            }
+          </div>
+        }
       </div>
 
       <div class="modal-row">
@@ -66,6 +94,18 @@
           <label for="booking-end">Date de retour</label>
           <input id="booking-end" name="booking-end" type="date" [min]="startDate || today" [(ngModel)]="endDate" />
         </div>
+      </div>
+
+      <div class="modal-field">
+        <label for="booking-promo">Code promo <span class="optional-tag">(optionnel)</span></label>
+        <input
+          id="booking-promo"
+          name="booking-promo"
+          type="text"
+          placeholder="DADA10"
+          autocomplete="off"
+          [(ngModel)]="promoCode"
+        />
       </div>
 
       <button type="button" class="btn btn-primary btn-lg btn-block" [disabled]="!isValid" (click)="confirm()">
