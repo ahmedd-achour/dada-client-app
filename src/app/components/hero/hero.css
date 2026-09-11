@@ -73,10 +73,10 @@
 
 .blob {
   position: absolute;
-  inset: -22px;
+  inset: -2px;
   background: linear-gradient(150deg, var(--primary-light), var(--bg-soft));
   animation: blobMorph 9s ease-in-out infinite;
-  z-index: 0;
+  z-index: -1;
 }
 
 @keyframes blobMorph {
@@ -115,6 +115,47 @@
 
 @media (max-width: 640px) {
   .hero {
-    padding: 48px 0 28px;
+    padding: 12px 0 12px;
+  }
+
+  .hero-inner {
+    gap: 12px;
+  }
+
+  .hero-art {
+    height: clamp(120px, 24svh, 190px);
+  }
+
+  .hero-photo {
+    padding: 14px;
+  }
+
+  .eyebrow {
+    display: none;
+  }
+
+  .hero-copy h1 {
+    font-size: 1.3rem;
+  }
+
+  .hero-copy .lede {
+    margin-top: 6px;
+    font-size: 0.82rem;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    margin-top: 10px;
+    gap: 6px;
+  }
+
+  .hero-actions .btn {
+    width: 100%;
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+
+  .trust-row {
+    display: none;
   }
 }
