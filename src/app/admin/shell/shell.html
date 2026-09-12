@@ -1,0 +1,15 @@
+<div class="admin">
+  <header class="admin-bar">
+    <a routerLink="/admin" class="admin-brand">
+      <img src="assets/logo.png" alt="Dada Rent Car" />
+      <span>Espace admin</span>
+    </a>
+    <div class="admin-bar-actions">
+      <a routerLink="/admin/new" class="btn btn-primary btn-sm">+ Nouvelle réservation</a>
+      <button type="button" class="btn btn-ghost btn-sm" (click)="logout()">Déconnexion</button>
+    </div>
+  </header>
+  <main class="admin-content">
+    <router-outlet />
+  </main>
+</div>

@@ -1,0 +1,29 @@
+<div class="stats-tiles">
+  <div class="tile">
+    <span class="tile-label">Réservations</span>
+    <span class="tile-value">{{ totalCount }}</span>
+  </div>
+  <div class="tile">
+    <span class="tile-label">Revenu confirmé</span>
+    <span class="tile-value">{{ totalRevenue }} DT</span>
+  </div>
+  <div class="tile">
+    <span class="tile-label">Taux d'annulation</span>
+    <span class="tile-value">{{ cancelRate }}%</span>
+  </div>
+</div>
+
+<div class="stats-charts">
+  <div class="chart-card">
+    <h3>Par statut</h3>
+    <div class="chart-box">
+      <canvas #statusCanvas></canvas>
+    </div>
+  </div>
+  <div class="chart-card">
+    <h3>Par catégorie</h3>
+    <div class="chart-box">
+      <canvas #categoryCanvas></canvas>
+    </div>
+  </div>
+</div>

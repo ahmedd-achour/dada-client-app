@@ -1,12 +1,15 @@
-import { Component, ElementRef, HostListener, ViewChild, effect } from '@angular/core';
+import { Component, HostListener, effect } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BookingModalService } from '../../shared/booking-modal.service';
 import { FLEET_CATEGORIES } from '../../shared/fleet-categories';
 import { waLink } from '../../shared/business-info';
+import { AttemptsService } from '../../shared/attempts.service';
+import { AlertService } from '../../shared/alert.service';
+import { VehiclePicker } from '../vehicle-picker/vehicle-picker';
 
 @Component({
   selector: 'app-booking-modal',
-  imports: [FormsModule],
+  imports: [FormsModule, VehiclePicker],
   templateUrl: './booking-modal.html',
   styleUrl: './booking-modal.css',
 })
@@ -14,17 +17,19 @@ export class BookingModal {
   protected readonly categories = FLEET_CATEGORIES;
   protected readonly today = new Date().toISOString().slice(0, 10);
 
-  @ViewChild('vehicleField') protected vehicleFieldRef?: ElementRef<HTMLElement>;
-
   protected selectedCar = '';
   protected customerName = '';
   protected customerPhone = '';
   protected promoCode = '';
   protected startDate = '';
   protected endDate = '';
-  protected showVehiclePicker = false;
+  protected submitting = false;
 
-  constructor(protected readonly modal: BookingModalService) {
+  constructor(
+    protected readonly modal: BookingModalService,
+    private readonly attempts: AttemptsService,
+    private readonly alerts: AlertService,
+  ) {
     effect(() => {
       if (this.modal.isOpen()) {
         this.selectedCar = this.modal.presetCategory() ?? this.categories[0].name;
@@ -33,42 +38,20 @@ export class BookingModal {
         this.promoCode = '';
         this.startDate = '';
         this.endDate = '';
-        this.showVehiclePicker = false;
+        this.submitting = false;
       }
     });
   }
 
   @HostListener('document:keydown.escape')
   protected onEscape(): void {
-    if (this.showVehiclePicker) {
-      this.showVehiclePicker = false;
-    } else if (this.modal.isOpen()) {
+    if (this.modal.isOpen()) {
       this.modal.close();
-    }
-  }
-
-  @HostListener('document:click', ['$event'])
-  protected onDocumentClick(event: MouseEvent): void {
-    if (
-      this.showVehiclePicker &&
-      this.vehicleFieldRef &&
-      !this.vehicleFieldRef.nativeElement.contains(event.target as Node)
-    ) {
-      this.showVehiclePicker = false;
     }
   }
 
   protected get selectedCategory() {
     return this.categories.find((c) => c.name === this.selectedCar) ?? this.categories[0];
-  }
-
-  protected toggleVehiclePicker(): void {
-    this.showVehiclePicker = !this.showVehiclePicker;
-  }
-
-  protected selectVehicle(name: string): void {
-    this.selectedCar = name;
-    this.showVehiclePicker = false;
   }
 
   protected get isValid(): boolean {
@@ -99,13 +82,27 @@ export class BookingModal {
     this.modal.close();
   }
 
-  protected confirm(): void {
-    if (!this.isValid) {
+  protected async confirm(): Promise<void> {
+    if (!this.isValid || this.submitting) {
       return;
     }
-    // TODO: once Firebase is wired up, persist { name: customerName, phone: customerPhone,
-    // category: selectedCar, startDate, endDate, promoCode } as a lead document here.
+    this.submitting = true;
+    try {
+      await this.attempts.createAttempt({
+        customerName: this.customerName.trim(),
+        customerPhone: this.customerPhone.trim(),
+        category: this.selectedCar,
+        startDate: this.startDate,
+        endDate: this.endDate,
+        promoCode: this.promoCode.trim(),
+        source: 'site',
+      });
+    } catch (error) {
+      console.error("Impossible d'enregistrer la réservation", error);
+      this.alerts.error('Un souci est survenu, mais vous pouvez continuer sur WhatsApp.');
+    }
     window.open(this.whatsappHref, '_blank', 'noopener');
+    this.submitting = false;
     this.modal.close();
   }
 }

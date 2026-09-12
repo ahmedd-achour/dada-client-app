@@ -17,7 +17,7 @@
 .airport-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, oklch(24% 0.03 155 / 0.88) 0%, oklch(24% 0.03 155 / 0.55) 55%, oklch(24% 0.03 155 / 0.2) 100%);
+  background: linear-gradient(90deg, oklch(24% 0.03 45 / 0.88) 0%, oklch(24% 0.03 45 / 0.55) 55%, oklch(24% 0.03 45 / 0.2) 100%);
 }
 
 .airport-inner {
@@ -60,7 +60,7 @@
   }
 
   .airport-overlay {
-    background: linear-gradient(180deg, oklch(24% 0.03 155 / 0.4) 0%, oklch(24% 0.03 155 / 0.88) 70%);
+    background: linear-gradient(180deg, oklch(24% 0.03 45 / 0.4) 0%, oklch(24% 0.03 45 / 0.88) 70%);
   }
 
   .airport-inner {

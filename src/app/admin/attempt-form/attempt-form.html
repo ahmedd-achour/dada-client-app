@@ -1,0 +1,46 @@
+<a routerLink="/admin" class="back-link">← Retour</a>
+
+<div class="form-card">
+  <h1>Nouvelle réservation</h1>
+  <p class="sub">Créez une réservation manuellement (téléphone, WhatsApp, au comptoir...).</p>
+
+  <div class="row">
+    <div class="field">
+      <label for="name">Nom complet</label>
+      <input id="name" type="text" placeholder="Nom du client" [(ngModel)]="customerName" name="name" />
+    </div>
+    <div class="field">
+      <label for="phone">Téléphone</label>
+      <input id="phone" type="tel" placeholder="55 606 106" [(ngModel)]="customerPhone" name="phone" />
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Véhicule</label>
+    <app-vehicle-picker [selected]="category" (selectedChange)="category = $event" />
+  </div>
+
+  <div class="row">
+    <div class="field">
+      <label for="start">Date de départ</label>
+      <input id="start" type="date" [min]="today" [(ngModel)]="startDate" name="start" />
+    </div>
+    <div class="field">
+      <label for="end">Date de retour</label>
+      <input id="end" type="date" [min]="startDate || today" [(ngModel)]="endDate" name="end" />
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="promo">Code promo (optionnel)</label>
+    <input id="promo" type="text" placeholder="DADA10" [(ngModel)]="promoCode" name="promo" />
+  </div>
+
+  @if (error) {
+    <p class="error">{{ error }}</p>
+  }
+
+  <button type="button" class="btn btn-primary btn-lg btn-block" [disabled]="!isValid || saving" (click)="save()">
+    {{ saving ? 'Création...' : 'Créer la réservation' }}
+  </button>
+</div>

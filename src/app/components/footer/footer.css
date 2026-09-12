@@ -1,7 +1,7 @@
 footer {
   padding: 72px 0 32px;
-  background: oklch(22% 0.025 155);
-  color: oklch(85% 0.01 155);
+  background: oklch(22% 0.025 45);
+  color: oklch(85% 0.01 55);
 }
 
 .footer-logo {
@@ -16,12 +16,12 @@ footer {
   grid-template-columns: 1.4fr 1fr 1.2fr;
   gap: 40px;
   padding-bottom: 40px;
-  border-bottom: 1px solid oklch(35% 0.02 155);
+  border-bottom: 1px solid oklch(35% 0.02 45);
 }
 
 .footer-brand p {
   display: block;
-  color: oklch(70% 0.015 155);
+  color: oklch(70% 0.015 50);
   margin-top: 16px;
   max-width: 32ch;
   font-size: 0.9rem;
@@ -37,7 +37,7 @@ footer {
 .footer-col a,
 .footer-col span {
   display: block;
-  color: oklch(70% 0.015 155);
+  color: oklch(70% 0.015 50);
   font-size: 0.9rem;
   font-weight: 500;
   margin-bottom: 12px;
@@ -62,7 +62,7 @@ footer {
   width: 38px;
   height: 38px;
   border-radius: 999px;
-  background: oklch(30% 0.025 155);
+  background: oklch(30% 0.025 45);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -81,11 +81,11 @@ footer {
   gap: 12px;
   padding-top: 24px;
   font-size: 0.82rem;
-  color: oklch(60% 0.015 155);
+  color: oklch(60% 0.015 50);
 }
 
 .footer-bottom a {
-  color: oklch(60% 0.015 155);
+  color: oklch(60% 0.015 50);
 }
 
 .footer-bottom a:hover {

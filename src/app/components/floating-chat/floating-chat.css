@@ -10,7 +10,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 14px 30px -8px oklch(30% 0.05 155 / 0.5);
+  box-shadow: 0 14px 30px -8px oklch(30% 0.05 45 / 0.5);
   z-index: 60;
   animation: pulse 2.6s ease-in-out infinite;
 }
@@ -19,12 +19,12 @@
   0%,
   100% {
     box-shadow:
-      0 14px 30px -8px oklch(30% 0.05 155 / 0.5),
-      0 0 0 0 oklch(50% 0.09 152 / 0.35);
+      0 14px 30px -8px oklch(30% 0.05 45 / 0.5),
+      0 0 0 0 oklch(43% 0.075 50 / 0.35);
   }
   50% {
     box-shadow:
-      0 14px 30px -8px oklch(30% 0.05 155 / 0.5),
-      0 0 0 12px oklch(50% 0.09 152 / 0);
+      0 14px 30px -8px oklch(30% 0.05 45 / 0.5),
+      0 0 0 12px oklch(43% 0.075 50 / 0);
   }
 }

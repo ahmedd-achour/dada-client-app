@@ -1,0 +1,293 @@
+  <div class="card assets-card" style="background: transparent; border: none; padding: 0; box-shadow: none;">
+    <div class="assets-card-head" style="margin-bottom: 1.5rem;">
+      <h2>Justificatifs</h2>
+      @if (!aiConfigured) {
+        <span class="ai-hint">Lecture automatique des documents (IA) : clé non configurée</span>
+      }
+    </div>
+
+    <div class="assets-grid-new" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem;">
+
+      <!-- CONTRAT -->
+      <div class="asset-grid-card" style="background: var(--card-bg); border-radius: var(--radius-lg); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); overflow: hidden; display: flex; flex-direction: column; border: 1px solid var(--border-color); transition: transform 0.2s, box-shadow 0.2s;">
+        @if (current.contractDocs.length === 0) {
+          <label class="asset-empty-state" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem 1.5rem; cursor: pointer; height: 100%; transition: background 0.2s;">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="1.5" style="margin-bottom: 1rem; opacity: 0.8; stroke-linecap: round; stroke-linejoin: round;">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+            <span style="font-weight: 600; font-size: 1.1em; margin-bottom: 0.5rem; text-align: center; color: var(--text-color);">Contrat de location</span>
+            <span style="color: var(--primary-color); font-weight: 600; font-size: 0.9em; display: flex; align-items: center; gap: 0.25rem;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              {{ uploading() === 'contractDocs' ? 'Analyse en cours...' : 'Ajouter document' }}
+            </span>
+            <input type="file" accept="image/*,video/*,application/pdf" hidden (change)="onFileSelected($event, 'contractDocs')" [disabled]="uploading() !== null" />
+          </label>
+        } @else {
+          <div class="asset-card-header" style="padding: 1rem; background: var(--bg-soft); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="margin: 0; font-size: 1.05em; color: var(--text-color);">Contrat de location</h3>
+            <label class="btn-icon" style="cursor: pointer; color: var(--primary-color); padding: 0.4rem; border-radius: 50%; background: rgba(var(--primary-rgb), 0.1); display: inline-flex; align-items: center; justify-content: center; transition: background 0.2s;" title="Ajouter un document supplémentaire">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <input type="file" accept="image/*,video/*,application/pdf" hidden (change)="onFileSelected($event, 'contractDocs')" [disabled]="uploading() !== null" />
+            </label>
+          </div>
+          <div class="asset-card-content" style="padding: 1rem; flex: 1; display: flex; flex-direction: column; gap: 1rem;">
+            @for (asset of current.contractDocs; track asset.url) {
+              <div class="asset-item-card" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <a [href]="asset.url" target="_blank" rel="noopener" style="display: flex; gap: 0.75rem; align-items: center; text-decoration: none; color: inherit; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); transition: border-color 0.2s;">
+                  @if (isVideo(asset.contentType)) {
+                    <video [src]="asset.url" muted style="width: 48px; height: 48px; object-fit: cover; border-radius: 4px;"></video>
+                  } @else if (isImage(asset.contentType)) {
+                    <img [src]="asset.url" [alt]="asset.name" style="width: 48px; height: 48px; object-fit: cover; border-radius: 4px;" />
+                  } @else {
+                    <div style="width: 48px; height: 48px; background: var(--bg-soft); border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                    </div>
+                  }
+                  <span style="font-size: 0.9em; word-break: break-all; flex: 1;">{{ asset.name }}</span>
+                </a>
+                @if (asset.contractInfo; as info) {
+                  <div class="asset-extracted" style="background: rgba(var(--primary-rgb), 0.05); padding: 0.75rem; border-radius: var(--radius-md); border-left: 3px solid var(--primary-color);">
+                    <div style="font-size: 0.8em; font-weight: 600; color: var(--primary-color); margin-bottom: 0.25rem; text-transform: uppercase; letter-spacing: 0.5px;">Données extraites (IA)</div>
+                    @if (info.totalPrice) { <div style="font-weight: 600; color: var(--text-color);">Prix total : {{ info.totalPrice }} DT</div> }
+                    @if (info.deposit) { <div style="font-size: 0.9em; color: var(--text-muted);">Caution : {{ info.deposit }} DT</div> }
+                    @if (info.notes) { <div style="font-size: 0.9em; color: var(--text-muted); margin-top: 0.25rem;">{{ info.notes }}</div> }
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- DEPART -->
+      <div class="asset-grid-card" style="background: var(--card-bg); border-radius: var(--radius-lg); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); overflow: hidden; display: flex; flex-direction: column; border: 1px solid var(--border-color); transition: transform 0.2s, box-shadow 0.2s;">
+        @if (current.departureVideos.length === 0) {
+          <label class="asset-empty-state" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem 1.5rem; cursor: pointer; height: 100%; transition: background 0.2s;">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="1.5" style="margin-bottom: 1rem; opacity: 0.8; stroke-linecap: round; stroke-linejoin: round;">
+              <path d="M23 7l-7 5 7 5V7Z"></path><rect x="1" y="5" width="15" height="14" rx="2"></rect>
+            </svg>
+            <span style="font-weight: 600; font-size: 1.1em; margin-bottom: 0.5rem; text-align: center; color: var(--text-color);">Vidéos de départ</span>
+            <span style="color: var(--primary-color); font-weight: 600; font-size: 0.9em; display: flex; align-items: center; gap: 0.25rem;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              {{ uploading() === 'departureVideos' ? 'Envoi en cours...' : 'Ajouter vidéo' }}
+            </span>
+            <input type="file" accept="video/*" hidden (change)="onFileSelected($event, 'departureVideos')" [disabled]="uploading() !== null" />
+          </label>
+        } @else {
+          <div class="asset-card-header" style="padding: 1rem; background: var(--bg-soft); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="margin: 0; font-size: 1.05em; color: var(--text-color);">Vidéos de départ</h3>
+            <label class="btn-icon" style="cursor: pointer; color: var(--primary-color); padding: 0.4rem; border-radius: 50%; background: rgba(var(--primary-rgb), 0.1); display: inline-flex; align-items: center; justify-content: center; transition: background 0.2s;" title="Ajouter une vidéo supplémentaire">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <input type="file" accept="video/*" hidden (change)="onFileSelected($event, 'departureVideos')" [disabled]="uploading() !== null" />
+            </label>
+          </div>
+          <div class="asset-card-content" style="padding: 1rem; flex: 1; display: flex; flex-direction: column; gap: 1rem;">
+            @for (asset of current.departureVideos; track asset.url) {
+              <div class="asset-item-card" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <a [href]="asset.url" target="_blank" rel="noopener" style="display: flex; gap: 0.75rem; align-items: center; text-decoration: none; color: inherit; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); transition: border-color 0.2s;">
+                  @if (isVideo(asset.contentType)) {
+                    <video [src]="asset.url" muted style="width: 48px; height: 48px; object-fit: cover; border-radius: 4px;"></video>
+                  }
+                  <span style="font-size: 0.9em; word-break: break-all; flex: 1;">{{ asset.name }}</span>
+                </a>
+                @if (asset.plateInfo; as plate) {
+                  <div class="asset-extracted" style="background: rgba(var(--primary-rgb), 0.05); padding: 0.75rem; border-radius: var(--radius-md); border-left: 3px solid var(--primary-color);">
+                    <div style="font-size: 0.8em; font-weight: 600; color: var(--primary-color); margin-bottom: 0.25rem; text-transform: uppercase; letter-spacing: 0.5px;">Données extraites (IA)</div>
+                    <div style="font-weight: 600; color: var(--text-color);">{{ plate.plateNumber || 'Plaque non lue' }}</div>
+                    @if (plate.vehicleCondition) { <div style="font-size: 0.9em; color: var(--text-muted); margin-top: 0.25rem;">{{ plate.vehicleCondition }}</div> }
+                    @if (plate.fuelLevel) { <div style="font-size: 0.9em; color: var(--text-muted);">Carburant : {{ plate.fuelLevel }}</div> }
+                    @if (plate.mileage) { <div style="font-size: 0.9em; color: var(--text-muted);">Km : {{ plate.mileage }}</div> }
+                    @if (plate.notes) { <div style="font-size: 0.9em; color: var(--text-muted); margin-top: 0.25rem; font-style: italic;">{{ plate.notes }}</div> }
+                  </div>
+                }
+              </div>
+            }
+            @if (current.departureReport; as report) {
+              <a class="report-link" [href]="report.url" target="_blank" rel="noopener" style="margin-top: auto; display: block; text-align: center; background: var(--bg-soft); padding: 0.75rem; border-radius: var(--radius-md); text-decoration: none; color: var(--primary-color); font-weight: 600; font-size: 0.9em;">
+                ?? Rapport d'état des lieux
+              </a>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- ARRIVEE -->
+      <div class="asset-grid-card" style="background: var(--card-bg); border-radius: var(--radius-lg); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); overflow: hidden; display: flex; flex-direction: column; border: 1px solid var(--border-color); transition: transform 0.2s, box-shadow 0.2s;">
+        @if (current.returnVideos.length === 0) {
+          <label class="asset-empty-state" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem 1.5rem; cursor: pointer; height: 100%; transition: background 0.2s;">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="1.5" style="margin-bottom: 1rem; opacity: 0.8; stroke-linecap: round; stroke-linejoin: round;">
+              <path d="M23 7l-7 5 7 5V7Z"></path><rect x="1" y="5" width="15" height="14" rx="2"></rect>
+            </svg>
+            <span style="font-weight: 600; font-size: 1.1em; margin-bottom: 0.5rem; text-align: center; color: var(--text-color);">Vidéos à l'arrivée</span>
+            <span style="color: var(--primary-color); font-weight: 600; font-size: 0.9em; display: flex; align-items: center; gap: 0.25rem;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              {{ uploading() === 'returnVideos' ? 'Envoi en cours...' : 'Ajouter vidéo' }}
+            </span>
+            <input type="file" accept="video/*" hidden (change)="onFileSelected($event, 'returnVideos')" [disabled]="uploading() !== null" />
+          </label>
+        } @else {
+          <div class="asset-card-header" style="padding: 1rem; background: var(--bg-soft); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="margin: 0; font-size: 1.05em; color: var(--text-color);">Vidéos à l'arrivée</h3>
+            <label class="btn-icon" style="cursor: pointer; color: var(--primary-color); padding: 0.4rem; border-radius: 50%; background: rgba(var(--primary-rgb), 0.1); display: inline-flex; align-items: center; justify-content: center; transition: background 0.2s;" title="Ajouter une vidéo supplémentaire">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <input type="file" accept="video/*" hidden (change)="onFileSelected($event, 'returnVideos')" [disabled]="uploading() !== null" />
+            </label>
+          </div>
+          <div class="asset-card-content" style="padding: 1rem; flex: 1; display: flex; flex-direction: column; gap: 1rem;">
+            @for (asset of current.returnVideos; track asset.url) {
+              <div class="asset-item-card" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <a [href]="asset.url" target="_blank" rel="noopener" style="display: flex; gap: 0.75rem; align-items: center; text-decoration: none; color: inherit; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); transition: border-color 0.2s;">
+                  @if (isVideo(asset.contentType)) {
+                    <video [src]="asset.url" muted style="width: 48px; height: 48px; object-fit: cover; border-radius: 4px;"></video>
+                  }
+                  <span style="font-size: 0.9em; word-break: break-all; flex: 1;">{{ asset.name }}</span>
+                </a>
+                @if (asset.plateInfo; as plate) {
+                  <div class="asset-extracted" style="background: rgba(var(--primary-rgb), 0.05); padding: 0.75rem; border-radius: var(--radius-md); border-left: 3px solid var(--primary-color);">
+                    <div style="font-size: 0.8em; font-weight: 600; color: var(--primary-color); margin-bottom: 0.25rem; text-transform: uppercase; letter-spacing: 0.5px;">Données extraites (IA)</div>
+                    <div style="font-weight: 600; color: var(--text-color);">{{ plate.plateNumber || 'Plaque non lue' }}</div>
+                    @if (plate.vehicleCondition) { <div style="font-size: 0.9em; color: var(--text-muted); margin-top: 0.25rem;">{{ plate.vehicleCondition }}</div> }
+                    @if (plate.fuelLevel) { <div style="font-size: 0.9em; color: var(--text-muted);">Carburant : {{ plate.fuelLevel }}</div> }
+                    @if (plate.mileage) { <div style="font-size: 0.9em; color: var(--text-muted);">Km : {{ plate.mileage }}</div> }
+                    @if (plate.notes) { <div style="font-size: 0.9em; color: var(--text-muted); margin-top: 0.25rem; font-style: italic;">{{ plate.notes }}</div> }
+                  </div>
+                }
+              </div>
+            }
+            @if (current.returnReport; as report) {
+              <a class="report-link" [href]="report.url" target="_blank" rel="noopener" style="margin-top: auto; display: block; text-align: center; background: var(--bg-soft); padding: 0.75rem; border-radius: var(--radius-md); text-decoration: none; color: var(--primary-color); font-weight: 600; font-size: 0.9em;">
+                ?? Rapport d'état des lieux
+              </a>
+            }
+            @if (current.comparisonReport; as report) {
+              <a class="report-link" [href]="report.url" target="_blank" rel="noopener" style="margin-top: 0.5rem; display: block; text-align: center; background: rgba(var(--primary-rgb), 0.1); padding: 0.75rem; border-radius: var(--radius-md); text-decoration: none; color: var(--primary-color); font-weight: 600; font-size: 0.9em;">
+                ?? Comparaison départ/arrivée
+              </a>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- VEHICULE DOCS -->
+      <div class="asset-grid-card" style="background: var(--card-bg); border-radius: var(--radius-lg); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); overflow: hidden; display: flex; flex-direction: column; border: 1px solid var(--border-color); transition: transform 0.2s, box-shadow 0.2s;">
+        @if (current.vehicleDocs.length === 0) {
+          <label class="asset-empty-state" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem 1.5rem; cursor: pointer; height: 100%; transition: background 0.2s;">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="1.5" style="margin-bottom: 1rem; opacity: 0.8; stroke-linecap: round; stroke-linejoin: round;">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+            <span style="font-weight: 600; font-size: 1.1em; margin-bottom: 0.5rem; text-align: center; color: var(--text-color);">Documents véhicule</span>
+            <span style="color: var(--primary-color); font-weight: 600; font-size: 0.9em; display: flex; align-items: center; gap: 0.25rem;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              {{ uploading() === 'vehicleDocs' ? 'Envoi en cours...' : 'Ajouter document' }}
+            </span>
+            <input type="file" accept="image/*,video/*,application/pdf" hidden (change)="onFileSelected($event, 'vehicleDocs')" [disabled]="uploading() !== null" />
+          </label>
+        } @else {
+          <div class="asset-card-header" style="padding: 1rem; background: var(--bg-soft); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="margin: 0; font-size: 1.05em; color: var(--text-color);">Documents véhicule</h3>
+            <label class="btn-icon" style="cursor: pointer; color: var(--primary-color); padding: 0.4rem; border-radius: 50%; background: rgba(var(--primary-rgb), 0.1); display: inline-flex; align-items: center; justify-content: center; transition: background 0.2s;" title="Ajouter un document supplémentaire">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <input type="file" accept="image/*,video/*,application/pdf" hidden (change)="onFileSelected($event, 'vehicleDocs')" [disabled]="uploading() !== null" />
+            </label>
+          </div>
+          <div class="asset-card-content" style="padding: 1rem; flex: 1; display: flex; flex-direction: column; gap: 1rem;">
+            @for (asset of current.vehicleDocs; track asset.url) {
+              <div class="asset-item-card" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <a [href]="asset.url" target="_blank" rel="noopener" style="display: flex; gap: 0.75rem; align-items: center; text-decoration: none; color: inherit; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); transition: border-color 0.2s;">
+                  @if (isVideo(asset.contentType)) {
+                    <video [src]="asset.url" muted style="width: 48px; height: 48px; object-fit: cover; border-radius: 4px;"></video>
+                  } @else if (isImage(asset.contentType)) {
+                    <img [src]="asset.url" [alt]="asset.name" style="width: 48px; height: 48px; object-fit: cover; border-radius: 4px;" />
+                  } @else {
+                    <div style="width: 48px; height: 48px; background: var(--bg-soft); border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path></svg>
+                    </div>
+                  }
+                  <span style="font-size: 0.9em; word-break: break-all; flex: 1;">{{ asset.name }}</span>
+                </a>
+                @if (asset.extracted; as info) {
+                  <div class="asset-extracted" style="background: rgba(var(--primary-rgb), 0.05); padding: 0.75rem; border-radius: var(--radius-md); border-left: 3px solid var(--primary-color);">
+                    <div style="font-size: 0.8em; font-weight: 600; color: var(--primary-color); margin-bottom: 0.25rem; text-transform: uppercase; letter-spacing: 0.5px;">Données extraites (IA)</div>
+                    <div style="font-weight: 600; color: var(--text-color);">{{ info.documentType || 'Document' }}</div>
+                    @if (info.documentNumber) { <div style="font-size: 0.9em; color: var(--text-muted); margin-top: 0.25rem;">N° {{ info.documentNumber }}</div> }
+                    @if (info.extraInfo) { <div style="font-size: 0.9em; color: var(--text-muted);">{{ info.extraInfo }}</div> }
+                  </div>
+                }
+              </div>
+            }
+            @if (vehicleChecklist(); as checklist) {
+              <div class="checklist" style="margin-top: auto; display: flex; flex-direction: column; gap: 0.5rem; background: var(--bg-soft); padding: 1rem; border-radius: var(--radius-md);">
+                <div style="font-size: 0.85em; font-weight: 600; color: var(--text-muted); margin-bottom: 0.25rem; text-transform: uppercase;">Vérification</div>
+                <label class="checklist-item"><input type="checkbox" disabled [checked]="checklist.carteGrise" /> Carte grise</label>
+                <label class="checklist-item"><input type="checkbox" disabled [checked]="checklist.matricule" /> Matricule</label>
+                <label class="checklist-item"><input type="checkbox" disabled [checked]="checklist.visiteTechnique" /> Visite technique</label>
+                <label class="checklist-item"><input type="checkbox" disabled [checked]="checklist.vignette" /> Vignette</label>
+                <label class="checklist-item"><input type="checkbox" disabled [checked]="checklist.assurance" /> Assurance</label>
+                <label class="checklist-item"><input type="checkbox" disabled [checked]="checklist.carteExploitation" /> Carte d'exploitation</label>
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- CLIENT DOCS -->
+      <div class="asset-grid-card" style="background: var(--card-bg); border-radius: var(--radius-lg); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); overflow: hidden; display: flex; flex-direction: column; border: 1px solid var(--border-color); transition: transform 0.2s, box-shadow 0.2s;">
+        @if (current.clientDocs.length === 0) {
+          <label class="asset-empty-state" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem 1.5rem; cursor: pointer; height: 100%; transition: background 0.2s;">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="1.5" style="margin-bottom: 1rem; opacity: 0.8; stroke-linecap: round; stroke-linejoin: round;">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+            <span style="font-weight: 600; font-size: 1.1em; margin-bottom: 0.5rem; text-align: center; color: var(--text-color);">Documents client</span>
+            <span style="color: var(--primary-color); font-weight: 600; font-size: 0.9em; display: flex; align-items: center; gap: 0.25rem;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              {{ uploading() === 'clientDocs' ? 'Envoi en cours...' : 'Ajouter document' }}
+            </span>
+            <input type="file" accept="image/*,video/*,application/pdf" hidden (change)="onFileSelected($event, 'clientDocs')" [disabled]="uploading() !== null" />
+          </label>
+        } @else {
+          <div class="asset-card-header" style="padding: 1rem; background: var(--bg-soft); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="margin: 0; font-size: 1.05em; color: var(--text-color);">Documents client</h3>
+            <label class="btn-icon" style="cursor: pointer; color: var(--primary-color); padding: 0.4rem; border-radius: 50%; background: rgba(var(--primary-rgb), 0.1); display: inline-flex; align-items: center; justify-content: center; transition: background 0.2s;" title="Ajouter un document supplémentaire">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <input type="file" accept="image/*,video/*,application/pdf" hidden (change)="onFileSelected($event, 'clientDocs')" [disabled]="uploading() !== null" />
+            </label>
+          </div>
+          <div class="asset-card-content" style="padding: 1rem; flex: 1; display: flex; flex-direction: column; gap: 1rem;">
+            @for (asset of current.clientDocs; track asset.url) {
+              <div class="asset-item-card" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <a [href]="asset.url" target="_blank" rel="noopener" style="display: flex; gap: 0.75rem; align-items: center; text-decoration: none; color: inherit; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); transition: border-color 0.2s;">
+                  @if (isVideo(asset.contentType)) {
+                    <video [src]="asset.url" muted style="width: 48px; height: 48px; object-fit: cover; border-radius: 4px;"></video>
+                  } @else if (isImage(asset.contentType)) {
+                    <img [src]="asset.url" [alt]="asset.name" style="width: 48px; height: 48px; object-fit: cover; border-radius: 4px;" />
+                  } @else {
+                    <div style="width: 48px; height: 48px; background: var(--bg-soft); border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path></svg>
+                    </div>
+                  }
+                  <span style="font-size: 0.9em; word-break: break-all; flex: 1;">{{ asset.name }}</span>
+                </a>
+                @if (asset.extracted; as info) {
+                  <div class="asset-extracted" style="background: rgba(var(--primary-rgb), 0.05); padding: 0.75rem; border-radius: var(--radius-md); border-left: 3px solid var(--primary-color);">
+                    <div style="font-size: 0.8em; font-weight: 600; color: var(--primary-color); margin-bottom: 0.25rem; text-transform: uppercase; letter-spacing: 0.5px;">Données extraites (IA)</div>
+                    <div style="font-weight: 600; color: var(--text-color);">{{ info.fullName || info.documentType || 'Document' }}</div>
+                    @if (info.documentNumber) { <div style="font-size: 0.9em; color: var(--text-muted); margin-top: 0.25rem;">N° {{ info.documentNumber }}</div> }
+                    @if (info.extraInfo) { <div style="font-size: 0.9em; color: var(--text-muted);">{{ info.extraInfo }}</div> }
+                  </div>
+                }
+              </div>
+            }
+            @if (clientChecklist(); as checklist) {
+              <div class="checklist" style="margin-top: auto; display: flex; flex-direction: column; gap: 0.5rem; background: var(--bg-soft); padding: 1rem; border-radius: var(--radius-md);">
+                <div style="font-size: 0.85em; font-weight: 600; color: var(--text-muted); margin-bottom: 0.25rem; text-transform: uppercase;">Vérification</div>
+                <label class="checklist-item"><input type="checkbox" disabled [checked]="checklist.permis" /> Permis de conduire</label>
+                <label class="checklist-item"><input type="checkbox" disabled [checked]="checklist.cin" /> CIN</label>
+                <label class="checklist-item"><input type="checkbox" disabled [checked]="checklist.passeport" /> Passeport</label>
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+    </div>
+  </div>

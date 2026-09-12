@@ -20,7 +20,7 @@
   border-color: var(--primary);
   color: #fff;
   transform: translateY(-14px);
-  box-shadow: 0 26px 44px -18px oklch(30% 0.05 155 / 0.42);
+  box-shadow: 0 26px 44px -18px oklch(30% 0.05 45 / 0.42);
 }
 
 .price-top {

@@ -1,0 +1,32 @@
+<div class="login-page">
+  <div class="login-card">
+    <div class="login-logo">
+      <img src="assets/logo.png" alt="Dada Rent Car" />
+    </div>
+    <div class="login-tabs">
+      <button type="button" [class.active]="mode === 'login'" (click)="setMode('login')">Connexion</button>
+      <button type="button" [class.active]="mode === 'signup'" (click)="setMode('signup')">Créer un compte</button>
+    </div>
+
+    <form (ngSubmit)="submit()">
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" type="email" name="email" placeholder="admin@dadarentcar.com" autocomplete="username" [(ngModel)]="email" />
+      </div>
+      <div class="field">
+        <label for="password">Mot de passe</label>
+        <input id="password" type="password" name="password" placeholder="••••••••" autocomplete="current-password" [(ngModel)]="password" />
+      </div>
+
+      @if (error) {
+        <p class="error">{{ error }}</p>
+      }
+
+      <button type="submit" class="btn btn-primary btn-lg btn-block" [disabled]="loading">
+        {{ loading ? 'Patientez...' : (mode === 'login' ? 'Se connecter' : 'Créer le compte') }}
+      </button>
+    </form>
+
+    <p class="hint">Espace réservé à l'équipe Dada Rent Car.</p>
+  </div>
+</div>

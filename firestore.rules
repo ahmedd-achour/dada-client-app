@@ -1,0 +1,19 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /attempts/{attemptId} {
+      // Anyone can submit a new booking attempt from the public site.
+      allow create: if true;
+      // Only signed-in admins can view, edit or delete attempts.
+      allow read, update, delete: if request.auth != null;
+    }
+
+    match /admins/{uid} {
+      // Any signed-in admin can see the team's email list (used to notify everyone).
+      allow read: if request.auth != null;
+      // An admin can only register/update their own entry.
+      allow create, update: if request.auth != null && request.auth.uid == uid;
+    }
+  }
+}

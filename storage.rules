@@ -1,0 +1,11 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /attempts/{attemptId}/{allPaths=**} {
+      // Only signed-in admins can upload or view booking assets
+      // (departure videos, vehicle docs, client docs).
+      allow read, write: if request.auth != null;
+    }
+  }
+}
