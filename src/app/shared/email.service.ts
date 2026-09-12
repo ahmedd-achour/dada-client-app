@@ -1,10 +1,7 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
+import { runtimeConfig } from './runtime-config';
 import { AdminsService } from './admins.service';
 import { Attempt } from './attempt.model';
-
-const { apiKey: BREVO_API_KEY, senderEmail: BREVO_SENDER_EMAIL, senderName: BREVO_SENDER_NAME, ownerEmail: OWNER_EMAIL } =
-  environment.brevo;
 
 @Injectable({ providedIn: 'root' })
 export class EmailService {
@@ -49,17 +46,17 @@ export class EmailService {
   private async send(subject: string, htmlContent: string): Promise<void> {
     try {
       const adminEmails = await this.adminsService.listAdminEmails();
-      const recipients = Array.from(new Set([OWNER_EMAIL, ...adminEmails])).map((email) => ({ email }));
+      const recipients = Array.from(new Set([runtimeConfig.brevoOwnerEmail, ...adminEmails])).map((email) => ({ email }));
 
       await fetch('https://api.brevo.com/v3/smtp/email', {
         method: 'POST',
         headers: {
           accept: 'application/json',
-          'api-key': BREVO_API_KEY,
+          'api-key': runtimeConfig.brevoApiKey,
           'content-type': 'application/json',
         },
         body: JSON.stringify({
-          sender: { name: BREVO_SENDER_NAME, email: BREVO_SENDER_EMAIL },
+          sender: { name: runtimeConfig.brevoSenderName, email: runtimeConfig.brevoSenderEmail },
           to: recipients,
           subject,
           htmlContent,

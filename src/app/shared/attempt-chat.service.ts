@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
+import { runtimeConfig } from './runtime-config';
 import { Attempt } from './attempt.model';
-
-const GEMINI_API_KEY = environment.gemini.apiKey;
-const GEMINI_MODEL = environment.gemini.model;
 
 export interface ChatMessage {
   role: 'user' | 'model';
@@ -20,7 +17,7 @@ export class AttemptChatService {
   buildSystemContext(attempt: Attempt): string {
     const docs = (arr: { name: string; extracted?: { documentType?: string; fullName?: string; documentNumber?: string; extraInfo?: string } | null; plateInfo?: { plateNumber?: string; vehicleCondition?: string; fuelLevel?: string; mileage?: string; notes?: string } | null; contractInfo?: { totalPrice?: number | null; deposit?: number | null; notes?: string | null } | null }[]) =>
       arr.map(a => {
-        if (a.plateInfo) return `  - ${a.name}: plaque=${a.plateInfo.plateNumber || 'ND'}, etat=${a.plateInfo.vehicleCondition || 'ND'}, carburant=${a.plateInfo.fuelLevel || 'ND'}, km=${a.plateInfo.mileage || 'ND'}`;
+        if (a.plateInfo) return `  - ${a.name}: plaque=${a.plateInfo.plateNumber || 'ND'}, état=${a.plateInfo.vehicleCondition || 'ND'}, carburant=${a.plateInfo.fuelLevel || 'ND'}, km=${a.plateInfo.mileage || 'ND'}`;
         if (a.contractInfo) return `  - ${a.name}: prix=${a.contractInfo.totalPrice || 'ND'} DT, caution=${a.contractInfo.deposit || 'ND'} DT`;
         if (a.extracted) return `  - ${a.name}: type=${a.extracted.documentType || 'ND'}, nom=${a.extracted.fullName || 'ND'}, num=${a.extracted.documentNumber || 'ND'}`;
         return `  - ${a.name}`;
@@ -28,30 +25,30 @@ export class AttemptChatService {
 
     const historyLines = attempt.history
       .slice(-20)
-      .map(h => `  [${new Date(h.at).toLocaleString('fr-FR')}] ${h.action}: ${h.note}${h.aiSummary ? ' | Resume IA: ' + h.aiSummary : ''}`)
+      .map(h => `  [${new Date(h.at).toLocaleString('fr-FR')}] ${h.action}: ${h.note}${h.aiSummary ? ' | Résumé IA: ' + h.aiSummary : ''}`)
       .join('\n') || '  Aucun';
 
     return `Tu es un assistant intelligent pour une agence de location de voitures "Dada Rent Car" en Tunisie.
-Tu as acces a toutes les donnees de cette reservation et tu dois repondre aux questions de l'administrateur.
-Reponds en francais, de maniere concise et precise. Si une information n'est pas disponible, dis-le clairement.
+Tu as accès à toutes les données de cette réservation et tu dois répondre aux questions de l'administrateur.
+Réponds en français, de manière concise et précise. Si une information n'est pas disponible, dis-le clairement.
 
-=== RESERVATION #${attempt.id ?? 'N/A'} ===
+=== RÉSERVATION #${attempt.id ?? 'N/A'} ===
 
 CLIENT:
   Nom: ${attempt.customerName}
-  Telephone: ${attempt.customerPhone}
+  Téléphone: ${attempt.customerPhone}
 
-VEHICULE:
-  Categorie: ${attempt.category}
+VÉHICULE:
+  Catégorie: ${attempt.category}
 
-PERIODE:
-  Depart: ${attempt.startDate}
+PÉRIODE:
+  Départ: ${attempt.startDate}
   Retour: ${attempt.endDate}
 
 STATUT: ${attempt.status}
 
 PRIX:
-  Source: ${attempt.pricing.source === 'contrat' ? 'Contrat signe' : 'Estimation'}
+  Source: ${attempt.pricing.source === 'contrat' ? 'Contrat signé' : 'Estimation'}
   Total: ${attempt.pricing.total} DT
   ${attempt.pricing.source !== 'contrat' ? `(Taux journalier: ${attempt.pricing.dailyRate} DT x ${attempt.pricing.days} jours)` : ''}
   ${attempt.pricing.discountPct > 0 ? `Remise: ${attempt.pricing.discountPct}%` : ''}
@@ -61,13 +58,13 @@ ${attempt.promoCode ? `CODE PROMO: ${attempt.promoCode}` : ''}
 CONTRATS SCANNÉS:
 ${docs(attempt.contractDocs)}
 
-VIDEOS DEPART (etat des lieux):
+VIDÉOS DÉPART (état des lieux):
 ${docs(attempt.departureVideos)}
 
-VIDEOS RETOUR (etat des lieux):
+VIDÉOS RETOUR (état des lieux):
 ${docs(attempt.returnVideos)}
 
-DOCUMENTS VEHICULE:
+DOCUMENTS VÉHICULE:
 ${docs(attempt.vehicleDocs)}
 
 DOCUMENTS CLIENT:
@@ -76,13 +73,13 @@ ${docs(attempt.clientDocs)}
 HISTORIQUE DES ACTIONS (20 derniers):
 ${historyLines}
 
-Tu peux repondre a des questions comme:
-- Quelle est l'immatriculation du vehicule?
-- Quel est le niveau de carburant au depart?
-- Le client a-t-il fourni son permis?
-- Y a-t-il des dommages detectes?
-- Quel est le prix total?
-- Quand est-ce que le contrat a ete cree?
+Tu peux répondre à des questions comme:
+- Quelle est l'immatriculation du véhicule ?
+- Quel est le niveau de carburant au départ ?
+- Le client a-t-il fourni son permis ?
+- Y a-t-il des dommages détectés ?
+- Quel est le prix total ?
+- Quand est-ce que le contrat a été créé ?
 - etc.`;
   }
 
@@ -91,7 +88,7 @@ Tu peux repondre a des questions comme:
     history: ChatMessage[],
     userMessage: string,
   ): Promise<string> {
-    if (!GEMINI_API_KEY) {
+    if (!runtimeConfig.geminiApiKey) {
       throw new Error('Gemini API key not configured');
     }
 
@@ -105,7 +102,7 @@ Tu peux repondre a des questions comme:
     });
     contents.push({
       role: 'model',
-      parts: [{ text: 'Compris. J\'ai bien pris connaissance de toutes les donnees de cette reservation. Je suis pret a repondre a vos questions.' }],
+      parts: [{ text: 'Compris. J\'ai bien pris connaissance de toutes les données de cette réservation. Je suis prêt à répondre à vos questions.' }],
     });
 
     // Add conversation history
@@ -122,7 +119,7 @@ Tu peux repondre a des questions comme:
       parts: [{ text: userMessage }],
     });
 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${runtimeConfig.geminiModel}:generateContent?key=${runtimeConfig.geminiApiKey}`;
     const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

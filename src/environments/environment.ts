@@ -1,10 +1,10 @@
 /**
- * Central place for every secret/config value the app needs.
+ * Central place for the app's Firebase project config.
  *
- * ⚠️ These are bundled into the client-side JS and are visible to anyone who opens
- * dev tools. That's a deliberate, temporary trade-off ("ship fast, test now, secure
- * later") — before going to production, move the sensitive ones (Gemini, Brevo,
- * Cloudinary api_secret) behind a small backend / Cloud Function.
+ * All other secrets (Gemini, Brevo, Cloudinary, Maps, Mapbox) live in Firebase
+ * Remote Config instead of here — see `src/app/shared/runtime-config.ts`.
+ * They can be rotated from the Firebase console without a rebuild/redeploy,
+ * and they never touch source control.
  */
 export const environment = {
   firebase: {
@@ -15,23 +15,5 @@ export const environment = {
     messagingSenderId: '408390836684',
     appId: '1:408390836684:web:ef271a0014d762d0bf7d69',
     measurementId: 'G-SZZM6CHQLG',
-  },
-
-  gemini: {
-    apiKey: 'REDACTED',
-    model: 'gemini-3.5-flash-lite',
-  },
-
-  brevo: {
-    apiKey: 'REDACTED',
-    senderEmail: 'service@xschnell.com',
-    senderName: 'Dada Rent Car',
-    ownerEmail: 'achour.pages@gmail.com',
-  },
-
-  cloudinary: {
-    cloudName: 'bubf0bim',
-    apiKey: '919164853477356',
-    apiSecret: 'REDACTED',
   },
 };

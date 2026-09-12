@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
+import { runtimeConfig } from './runtime-config';
 import { ContractExtraction, ExtractedDocFields, VehicleStateExtraction } from './attempt.model';
-
-const GEMINI_API_KEY = environment.gemini.apiKey;
-const GEMINI_MODEL = environment.gemini.model;
 
 const DOC_PROMPT = `Tu analyses un document pour une agence de location de voitures en Tunisie.
 Le document est soit une pièce d'identité / permis de conduire / passeport du client, soit un document
@@ -47,7 +44,7 @@ const MAX_INLINE_BYTES = 18 * 1024 * 1024; // stay under Gemini's inline request
 
 @Injectable({ providedIn: 'root' })
 export class GeminiService {
-  readonly isConfigured = !!GEMINI_API_KEY;
+  get isConfigured(): boolean { return !!runtimeConfig.geminiApiKey; }
 
   async extractDocumentFields(file: File): Promise<ExtractedDocFields | null> {
     if (!this.isConfigured || !this.isSupportedDocInput(file)) {
@@ -106,7 +103,7 @@ Compare-les et réponds uniquement avec un objet JSON strict au format :
 Ne réponds rien d'autre que ce JSON.`;
 
     try {
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${runtimeConfig.geminiModel}:generateContent?key=${runtimeConfig.geminiApiKey}`;
       const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -142,7 +139,7 @@ Ne réponds rien d'autre que ce JSON.`;
     
     try {
       const base64 = await this.fileToBase64(file);
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${runtimeConfig.geminiModel}:generateContent?key=${runtimeConfig.geminiApiKey}`;
       const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -180,7 +177,7 @@ Ne réponds rien d'autre que ce JSON.`;
   private async generateStructured<T>(file: File, prompt: string): Promise<T | null> {
     try {
       const base64 = await this.fileToBase64(file);
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${runtimeConfig.geminiModel}:generateContent?key=${runtimeConfig.geminiApiKey}`;
       const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

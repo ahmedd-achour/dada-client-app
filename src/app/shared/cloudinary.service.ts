@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
+import { runtimeConfig } from './runtime-config';
 
 export interface CloudinaryUploadResult {
   url: string;
@@ -15,13 +15,13 @@ export class CloudinaryService {
 
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('api_key', environment.cloudinary.apiKey);
+    formData.append('api_key', runtimeConfig.cloudinaryApiKey);
     formData.append('timestamp', String(timestamp));
     formData.append('folder', folder);
     formData.append('signature', signature);
 
     const response = await fetch(
-      `https://api.cloudinary.com/v1_1/${environment.cloudinary.cloudName}/auto/upload`,
+      `https://api.cloudinary.com/v1_1/${runtimeConfig.cloudinaryCloudName}/auto/upload`,
       { method: 'POST', body: formData },
     );
 
@@ -39,7 +39,7 @@ export class CloudinaryService {
       Object.keys(params)
         .sort()
         .map((key) => `${key}=${params[key]}`)
-        .join('&') + environment.cloudinary.apiSecret;
+        .join('&') + runtimeConfig.cloudinaryApiSecret;
 
     const digest = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(toSign));
     return Array.from(new Uint8Array(digest))
