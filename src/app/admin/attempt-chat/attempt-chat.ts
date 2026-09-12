@@ -38,13 +38,13 @@ export class AttemptChat implements OnInit, OnDestroy, AfterViewChecked {
   private shouldScrollToBottom = false;
 
   readonly quickQuestions = [
-    'Quelle est l\'immatriculation du vehicule?',
-    'Quel est l\'etat du vehicule au depart?',
-    'Le client a fourni son permis?',
-    'Y a-t-il des dommages detectes?',
-    'Quel est le prix total de la location?',
-    'Quand est-ce que la reservation a ete creee?',
-    'Le contrat est-il signe?',
+    "Quelle est l'immatriculation du véhicule ?",
+    "Quel est l'état du véhicule au départ ?",
+    'Le client a fourni son permis ?',
+    'Y a-t-il des dommages détectés ?',
+    'Quel est le prix total de la location ?',
+    'Quand est-ce que la réservation a été créée ?',
+    'Le contrat est-il signé ?',
   ];
 
   constructor(
@@ -74,7 +74,7 @@ export class AttemptChat implements OnInit, OnDestroy, AfterViewChecked {
       this.messages.set([
         {
           role: 'model',
-          text: `Bonjour ! Je suis votre assistant IA pour la reservation de **${this.attempt.customerName}**.\n\nJe connais toutes les donnees de ce dossier : documents, videos, historique, prix, etc. Posez-moi vos questions !`,
+          text: `Bonjour ! Je suis votre assistant IA pour la réservation de **${this.attempt.customerName}**.\n\nJe connais toutes les données de ce dossier : documents, vidéos, historique, prix, etc. Posez-moi vos questions !`,
           timestamp: Date.now(),
         },
       ]);
@@ -102,7 +102,7 @@ export class AttemptChat implements OnInit, OnDestroy, AfterViewChecked {
       this.messages.update(msgs => [...msgs, modelMessage]);
       this.shouldScrollToBottom = true;
     } catch (err) {
-      this.alerts.error('Erreur de connexion avec l\'IA. Verifiez la cle API Gemini.');
+      this.alerts.error('Erreur de connexion avec l\'IA. Vérifiez la clé API Gemini.');
       // Remove the user message on failure
       this.messages.update(msgs => msgs.slice(0, -1));
     } finally {

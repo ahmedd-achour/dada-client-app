@@ -15,10 +15,11 @@ export class AttemptChatService {
    * This is injected as the first message so Gemini knows everything.
    */
   buildSystemContext(attempt: Attempt): string {
-    const docs = (arr: { name: string; extracted?: { documentType?: string; fullName?: string; documentNumber?: string; extraInfo?: string } | null; plateInfo?: { plateNumber?: string; vehicleCondition?: string; fuelLevel?: string; mileage?: string; notes?: string } | null; contractInfo?: { totalPrice?: number | null; deposit?: number | null; notes?: string | null } | null }[]) =>
+    const docs = (arr: { name: string; extracted?: { documentType?: string; fullName?: string; documentNumber?: string; extraInfo?: string } | null; plateInfo?: { plateNumber?: string; vehicleCondition?: string; fuelLevel?: string; mileage?: string; notes?: string } | null; contractInfo?: { totalPrice?: number | null; deposit?: number | null; notes?: string | null } | null; receiptInfo?: { amountPaid?: number | null; paymentMethod?: string; paymentDate?: string; notes?: string | null } | null }[]) =>
       arr.map(a => {
         if (a.plateInfo) return `  - ${a.name}: plaque=${a.plateInfo.plateNumber || 'ND'}, état=${a.plateInfo.vehicleCondition || 'ND'}, carburant=${a.plateInfo.fuelLevel || 'ND'}, km=${a.plateInfo.mileage || 'ND'}`;
-        if (a.contractInfo) return `  - ${a.name}: prix=${a.contractInfo.totalPrice || 'ND'} DT, caution=${a.contractInfo.deposit || 'ND'} DT`;
+        if (a.contractInfo) return `  - ${a.name}: prix=${a.contractInfo.totalPrice || 'ND'} DT (indicatif, non confirmé), caution=${a.contractInfo.deposit || 'ND'} DT`;
+        if (a.receiptInfo) return `  - ${a.name}: montant reçu=${a.receiptInfo.amountPaid || 'ND'} DT, moyen=${a.receiptInfo.paymentMethod || 'ND'}, date=${a.receiptInfo.paymentDate || 'ND'}`;
         if (a.extracted) return `  - ${a.name}: type=${a.extracted.documentType || 'ND'}, nom=${a.extracted.fullName || 'ND'}, num=${a.extracted.documentNumber || 'ND'}`;
         return `  - ${a.name}`;
       }).join('\n') || '  Aucun';
@@ -48,15 +49,21 @@ PÉRIODE:
 STATUT: ${attempt.status}
 
 PRIX:
-  Source: ${attempt.pricing.source === 'contrat' ? 'Contrat signé' : 'Estimation'}
+  Source: ${attempt.pricing.source === 'recus' ? 'Reçus financiers (revenu CONFIRMÉ — argent réellement reçu)' : attempt.pricing.source === 'contrat' ? 'Contrat signé (prix INDICATIF, non confirmé)' : 'Estimation'}
   Total: ${attempt.pricing.total} DT
-  ${attempt.pricing.source !== 'contrat' ? `(Taux journalier: ${attempt.pricing.dailyRate} DT x ${attempt.pricing.days} jours)` : ''}
+  ${attempt.pricing.source === 'estimation' ? `(Taux journalier: ${attempt.pricing.dailyRate} DT x ${attempt.pricing.days} jours)` : ''}
   ${attempt.pricing.discountPct > 0 ? `Remise: ${attempt.pricing.discountPct}%` : ''}
+  IMPORTANT: seul un total dont la source est "Reçus financiers" est de l'argent confirmé reçu. Un prix
+  venant du contrat est seulement indicatif (le contrat peut être renégocié) — précise-le si on te demande
+  le revenu confirmé ou si le paiement a bien été reçu.
 
 ${attempt.promoCode ? `CODE PROMO: ${attempt.promoCode}` : ''}
 
-CONTRATS SCANNÉS:
+CONTRATS SCANNÉS (prix indicatif seulement):
 ${docs(attempt.contractDocs)}
+
+REÇUS FINANCIERS (source de vérité du revenu):
+${docs(attempt.receiptDocs)}
 
 VIDÉOS DÉPART (état des lieux):
 ${docs(attempt.departureVideos)}

@@ -18,6 +18,14 @@
   --radius-xl: 32px;
   --container: 1180px;
 
+  /* Aliases used by the admin workspace (attempt detail, chat widget, etc.) */
+  --primary-color: #7a4a28;
+  --primary-rgb: 122, 74, 40;
+  --card-bg: var(--surface);
+  --border-color: var(--line);
+  --text-color: var(--ink);
+  --text-muted: var(--ink-muted);
+
   --font-display: 'Sora', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-body: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
 }

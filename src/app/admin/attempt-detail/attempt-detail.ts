@@ -1,12 +1,14 @@
-import { Component, Signal, computed, signal } from '@angular/core';
+import { Component, Signal, computed, effect, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { AttemptsService, AssetKind } from '../../shared/attempts.service';
+import { AttemptsService, AssetKind, ASSET_KIND_LABELS } from '../../shared/attempts.service';
 import {
+  ASSET_RETENTION_DAYS,
   ATTEMPT_STATUSES,
   Attempt,
+  AttemptAsset,
   AttemptStatus,
   ClientDocChecklist,
   VehicleDocChecklist,
@@ -15,6 +17,7 @@ import { GeminiService } from '../../shared/gemini.service';
 import { AlertService } from '../../shared/alert.service';
 import { CloudinaryService } from '../../shared/cloudinary.service';
 import { VehiclePicker } from '../../components/vehicle-picker/vehicle-picker';
+import { AttemptChat } from '../attempt-chat/attempt-chat';
 
 type Panel = 'none' | 'vehicle' | 'dates' | 'status';
 type CardKey = 'vehicle' | 'dates' | 'status' | 'cancel';
@@ -30,9 +33,19 @@ const CARD_HELP: Record<CardKey, string> = {
     "Annule cette réservation : le client est marqué comme annulé. Ce n'est pas définitif — vous pouvez toujours revenir en arrière avec la carte Statut.",
 };
 
+const ASSET_KINDS: AssetKind[] = ['contractDocs', 'receiptDocs', 'departureVideos', 'returnVideos', 'vehicleDocs', 'clientDocs'];
+
+interface ArchivedAssetView {
+  kind: AssetKind;
+  kindLabel: string;
+  asset: AttemptAsset;
+  daysLeft: number;
+  expired: boolean;
+}
+
 @Component({
   selector: 'app-attempt-detail',
-  imports: [CommonModule, FormsModule, RouterLink, VehiclePicker],
+  imports: [CommonModule, FormsModule, RouterLink, VehiclePicker, AttemptChat],
   templateUrl: './attempt-detail.html',
   styleUrl: './attempt-detail.css',
 })
@@ -177,10 +190,14 @@ export class AttemptDetail {
           ? await this.geminiService.extractVehicleState(file)
           : kind === 'contractDocs'
             ? await this.geminiService.extractContractData(file)
-            : await this.geminiService.extractDocumentFields(file);
+            : kind === 'receiptDocs'
+              ? await this.geminiService.extractReceiptData(file)
+              : await this.geminiService.extractDocumentFields(file);
       await this.attemptsService.uploadAsset(this.id, file, kind, extracted);
-      if (kind === 'contractDocs' && (extracted as { totalPrice?: number | null } | null)?.totalPrice) {
-        this.alerts.toast('Contrat analysé — prix mis à jour');
+      if (kind === 'receiptDocs' && (extracted as { amountPaid?: number | null } | null)?.amountPaid) {
+        this.alerts.toast('Reçu analysé — revenu confirmé mis à jour');
+      } else if (kind === 'contractDocs' && (extracted as { totalPrice?: number | null } | null)?.totalPrice) {
+        this.alerts.toast('Contrat analysé — prix indicatif mis à jour');
       } else {
         this.alerts.toast('Fichier ajouté');
       }

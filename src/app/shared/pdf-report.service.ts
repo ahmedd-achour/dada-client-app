@@ -86,7 +86,11 @@ export class PdfReportService {
     y += 4;
     docPdf.setFont('helvetica', 'bold');
     docPdf.setFontSize(12);
-    docPdf.text(comparison.damageDetected ? '⚠ Différence détectée' : '✓ Aucun problème détecté', 14, y);
+    docPdf.text(
+      this.normalize(comparison.damageDetected ? '⚠ Différence détectée' : '✓ Aucun problème détecté'),
+      14,
+      y,
+    );
     y += 8;
     y = this.paragraph(docPdf, y, 'Résumé', comparison.summary);
     y = this.paragraph(docPdf, y, 'Détails', comparison.details);
@@ -132,32 +136,35 @@ export class PdfReportService {
     docPdf.text(this.normalize(`${label} :`), 14, y);
     y += 6;
     docPdf.setFont('helvetica', 'normal');
-    const split = docPdf.splitTextToSize(text, 182);
-    docPdf.text(split.map(l => this.normalize(l)), 14, y);
+    const split: string[] = docPdf.splitTextToSize(text, 182);
+    docPdf.text(split.map((l: string) => this.normalize(l)), 14, y);
     return y + split.length * 5 + 4;
   }
 
-  /** jsPDF's built-in Helvetica doesn't support accented chars — normalize to ASCII for PDF output. */
+  /**
+   * jsPDF's built-in Helvetica renders accented French letters (é, è, à, ç, ...) correctly —
+   * no need to strip them. What it CANNOT render are typographic punctuation (em/en dash,
+   * ellipsis, curly quotes) and symbols/emoji (⚠, ✓, →, ...): those silently turn into
+   * unrelated glyphs (e.g. ⚠ becomes "&"). Convert those known cases to safe equivalents,
+   * then drop anything else outside Latin-1 as a final safety net (covers Gemini-generated
+   * notes that might contain arbitrary unicode).
+   */
   private normalize(text: string): string {
     return text
-      .replace(/[àâä]/g, 'a')
-      .replace(/[éèêë]/g, 'e')
-      .replace(/[îï]/g, 'i')
-      .replace(/[ôö]/g, 'o')
-      .replace(/[ùûü]/g, 'u')
-      .replace(/ç/g, 'c')
-      .replace(/[ÀÂÄ]/g, 'A')
-      .replace(/[ÉÈÊË]/g, 'E')
-      .replace(/[ÎÏ]/g, 'I')
-      .replace(/[ÔÖ]/g, 'O')
-      .replace(/[ÙÛÜ]/g, 'U')
-      .replace(/Ç/g, 'C')
-      .replace(/’/g, "'")   // curly apostrophe
-      .replace(/—/g, '-')   // em dash
-      .replace(/–/g, '-')   // en dash
-      .replace(/…/g, '...') // ellipsis
-      .replace(/»/g, '>>')  // guillemet
-      .replace(/«/g, '<<'); // guillemet
+      .replace(/œ/g, 'oe')
+      .replace(/Œ/g, 'OE')
+      .replace(/[’‘]/g, "'")
+      .replace(/[“”]/g, '"')
+      .replace(/[—–]/g, '-')
+      .replace(/…/g, '...')
+      .replace(/»/g, '>>')
+      .replace(/«/g, '<<')
+      .replace(/→/g, '->')
+      .replace(/←/g, '<-')
+      .replace(/⚠/g, '[!]')
+      .replace(/[✓✔]/g, 'OK')
+      .replace(/[✗✘]/g, 'X')
+      .replace(/[^\x00-\xFF]/g, '');
   }
 
 }

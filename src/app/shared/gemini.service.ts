@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { runtimeConfig } from './runtime-config';
-import { ContractExtraction, ExtractedDocFields, VehicleStateExtraction } from './attempt.model';
+import { ContractExtraction, ExtractedDocFields, ReceiptExtraction, VehicleStateExtraction } from './attempt.model';
 
 const DOC_PROMPT = `Tu analyses un document pour une agence de location de voitures en Tunisie.
 Le document est soit une pièce d'identité / permis de conduire / passeport du client, soit un document
@@ -40,6 +40,18 @@ Réponds uniquement avec un objet JSON strict au format :
 - notes : toute clause ou remarque importante en une courte phrase.
 Ne réponds rien d'autre que ce JSON.`;
 
+const RECEIPT_PROMPT = `Tu analyses un reçu de paiement (reçu bancaire, virement, ticket de caisse, capture
+d'application bancaire...) pour une agence de location de voitures en Tunisie.
+L'entrée peut être une photo, un scan/PDF, ou une vidéo filmée à la main montrant le reçu.
+Repère le montant réellement payé/reçu, le moyen de paiement, et la date du paiement.
+Réponds uniquement avec un objet JSON strict au format :
+{"amountPaid": 000, "paymentMethod": "...", "paymentDate": "AAAA-MM-JJ", "notes": "..."}
+- amountPaid : montant en dinars tunisiens (DT), nombre seul sans texte ni symbole. Mets null si illisible.
+- paymentMethod : ex. "Espèces", "Virement", "Carte bancaire", "Chèque", chaîne vide si non déterminable.
+- paymentDate : format AAAA-MM-JJ si visible, sinon chaîne vide.
+- notes : toute précision utile en une courte phrase (référence de transaction, acompte partiel...).
+Ne réponds rien d'autre que ce JSON.`;
+
 const MAX_INLINE_BYTES = 18 * 1024 * 1024; // stay under Gemini's inline request payload limits
 
 @Injectable({ providedIn: 'root' })
@@ -69,6 +81,13 @@ export class GeminiService {
       return null;
     }
     return this.generateStructured<ContractExtraction>(file, CONTRACT_PROMPT);
+  }
+
+  async extractReceiptData(file: File): Promise<ReceiptExtraction | null> {
+    if (!this.isConfigured || !this.isSupportedDocInput(file)) {
+      return null;
+    }
+    return this.generateStructured<ReceiptExtraction>(file, RECEIPT_PROMPT);
   }
 
   /** Accepts a photo, a PDF/scan, or a hand-filmed video of the document (agents film docs at the counter). */

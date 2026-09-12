@@ -83,7 +83,7 @@
           class="chat-voice-btn"
           [class.recording]="isListening()"
           (click)="toggleVoice()"
-          [title]="isListening() ? 'Arreter l\'ecoute' : 'Parler'"
+          [title]="isListening() ? 'Arrêter l\'écoute' : 'Parler'"
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
@@ -96,7 +96,7 @@
           [value]="inputText()"
           (input)="inputText.set($any($event.target).value)"
           (keydown)="onKeyDown($event)"
-          placeholder="Posez une question sur cette reservation..."
+          placeholder="Posez une question sur cette réservation..."
           rows="1"
           [disabled]="isLoading()"
         ></textarea>

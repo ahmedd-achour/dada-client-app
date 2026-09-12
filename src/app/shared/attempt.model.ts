@@ -24,7 +24,7 @@ export interface VehicleStateExtraction {
   notes: string;
 }
 
-/** Read (OCR) from the signed rental contract — becomes the source of truth for pricing. */
+/** Read (OCR) from the signed rental contract — informational only, not trusted for confirmed revenue. */
 export interface ContractExtraction {
   totalPrice: number | null;
   deposit: number | null;
@@ -32,6 +32,20 @@ export interface ContractExtraction {
   endDate: string;
   notes: string;
 }
+
+/**
+ * Read from a bank/cash receipt (reçu, virement, ticket de caisse...). This is the only
+ * source trusted for confirmed revenue — a contract price can be renegotiated after signing,
+ * but a receipt reflects money actually paid or received.
+ */
+export interface ReceiptExtraction {
+  amountPaid: number | null;
+  paymentMethod: string;
+  paymentDate: string;
+  notes: string;
+}
+
+export const ASSET_RETENTION_DAYS = 30;
 
 export interface AttemptAsset {
   url: string;
@@ -42,6 +56,14 @@ export interface AttemptAsset {
   extracted?: ExtractedDocFields;
   plateInfo?: VehicleStateExtraction;
   contractInfo?: ContractExtraction;
+  receiptInfo?: ReceiptExtraction;
+  /**
+   * Set when the asset is archived (moved to the "Corbeille") instead of deleted outright —
+   * protects against accidental data loss. Cleared on restore. An asset archived for more
+   * than ASSET_RETENTION_DAYS becomes eligible for permanent deletion (manual or swept
+   * automatically next time the reservation is opened). Re-archiving resets the timer.
+   */
+  archivedAt?: number;
 }
 
 export interface AttemptPricing {
@@ -50,8 +72,12 @@ export interface AttemptPricing {
   subtotal: number;
   discountPct: number;
   total: number;
-  /** 'estimation' = computed from the tariff table (no contract yet); 'contrat' = read from the signed contract. */
-  source: 'estimation' | 'contrat';
+  /**
+   * 'estimation' = computed from the tariff table (no contract yet); 'contrat' = read from the
+   * signed contract (informational, not confirmed); 'recus' = sum of uploaded financial receipts —
+   * the only source counted as confirmed revenue, since it reflects money actually collected.
+   */
+  source: 'estimation' | 'contrat' | 'recus';
 }
 
 export interface AttemptHistoryEntry {
@@ -95,6 +121,7 @@ export interface Attempt {
   vehicleDocs: AttemptAsset[];
   clientDocs: AttemptAsset[];
   contractDocs: AttemptAsset[];
+  receiptDocs: AttemptAsset[];
   departureReport: AttemptAsset | null;
   returnReport: AttemptAsset | null;
   comparisonReport: AttemptAsset | null;

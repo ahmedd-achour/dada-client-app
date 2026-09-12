@@ -20,6 +20,7 @@ import { CloudinaryService } from './cloudinary.service';
 import { GeminiService } from './gemini.service';
 import { PdfReportService } from './pdf-report.service';
 import {
+  ASSET_RETENTION_DAYS,
   Attempt,
   AttemptAsset,
   AttemptHistoryEntry,
@@ -27,6 +28,7 @@ import {
   ClientDocChecklist,
   ContractExtraction,
   ExtractedDocFields,
+  ReceiptExtraction,
   VehicleDocChecklist,
   VehicleStateExtraction,
 } from './attempt.model';
@@ -41,6 +43,7 @@ function normalizeAttempt(data: DocumentData): Attempt {
     vehicleDocs: [],
     clientDocs: [],
     contractDocs: [],
+    receiptDocs: [],
     departureReport: null,
     returnReport: null,
     comparisonReport: null,
@@ -59,7 +62,16 @@ export interface NewAttemptInput {
   source: 'site' | 'admin';
 }
 
-export type AssetKind = 'departureVideos' | 'returnVideos' | 'vehicleDocs' | 'clientDocs' | 'contractDocs';
+export type AssetKind = 'departureVideos' | 'returnVideos' | 'vehicleDocs' | 'clientDocs' | 'contractDocs' | 'receiptDocs';
+
+export const ASSET_KIND_LABELS: Record<AssetKind, string> = {
+  departureVideos: 'vidéo de départ',
+  returnVideos: 'vidéo de retour',
+  vehicleDocs: 'document véhicule',
+  clientDocs: 'document client',
+  contractDocs: 'contrat',
+  receiptDocs: 'reçu financier',
+};
 
 @Injectable({ providedIn: 'root' })
 export class AttemptsService {
@@ -98,6 +110,7 @@ export class AttemptsService {
       vehicleDocs: [],
       clientDocs: [],
       contractDocs: [],
+      receiptDocs: [],
       departureReport: null,
       returnReport: null,
       comparisonReport: null,
@@ -163,7 +176,7 @@ export class AttemptsService {
   async updateDates(id: string, category: string, startDate: string, endDate: string): Promise<void> {
     const existing = await this.fetchAttempt(id);
     const updates: Partial<Attempt> = { startDate, endDate, updatedAt: Date.now() };
-    if (existing?.pricing?.source !== 'contrat') {
+    if (existing?.pricing?.source === 'estimation') {
       updates.pricing = calculatePricing(category, startDate, endDate);
     }
     await updateDoc(doc(db, ATTEMPTS_COLLECTION, id), updates as DocumentData);
@@ -180,7 +193,7 @@ export class AttemptsService {
   async updateVehicle(id: string, category: string, startDate: string, endDate: string): Promise<void> {
     const existing = await this.fetchAttempt(id);
     const updates: Partial<Attempt> = { category, updatedAt: Date.now() };
-    if (existing?.pricing?.source !== 'contrat') {
+    if (existing?.pricing?.source === 'estimation') {
       updates.pricing = calculatePricing(category, startDate, endDate);
     }
     await updateDoc(doc(db, ATTEMPTS_COLLECTION, id), updates as DocumentData);
@@ -195,7 +208,7 @@ export class AttemptsService {
     id: string,
     file: File,
     kind: AssetKind,
-    extracted?: ExtractedDocFields | VehicleStateExtraction | ContractExtraction | null,
+    extracted?: ExtractedDocFields | VehicleStateExtraction | ContractExtraction | ReceiptExtraction | null,
   ): Promise<void> {
     const { url, publicId } = await this.cloudinaryService.upload(file, `attempts/${id}/${kind}`);
     const extractedKey =
@@ -203,7 +216,9 @@ export class AttemptsService {
         ? 'plateInfo'
         : kind === 'contractDocs'
           ? 'contractInfo'
-          : 'extracted';
+          : kind === 'receiptDocs'
+            ? 'receiptInfo'
+            : 'extracted';
     const asset: AttemptAsset = {
       url,
       path: publicId,
@@ -221,17 +236,103 @@ export class AttemptsService {
     if (kind === 'contractDocs' && extracted) {
       await this.applyContractPricing(id, extracted as ContractExtraction);
     }
+    if (kind === 'receiptDocs' && extracted) {
+      await this.applyReceiptPricing(id);
+    }
     if ((kind === 'departureVideos' || kind === 'returnVideos') && extracted) {
       await this.generateStateReport(id, kind, extracted as VehicleStateExtraction);
     }
   }
 
+  /** Moves an asset to the Corbeille (soft-delete) instead of deleting it outright. */
+  async archiveAsset(id: string, kind: AssetKind, assetUrl: string): Promise<void> {
+    const asset = await this.updateAsset(id, kind, assetUrl, (a) => ({ ...a, archivedAt: Date.now() }));
+    if (asset) {
+      await this.pushHistory(id, { action: 'archive', note: `Fichier archivé (${ASSET_KIND_LABELS[kind]}) : ${asset.name}` });
+      if (kind === 'receiptDocs') {
+        await this.applyReceiptPricing(id);
+      }
+    }
+  }
+
+  /** Restores an archived asset — clears the archive timestamp, resetting the retention timer if re-archived later. */
+  async restoreAsset(id: string, kind: AssetKind, assetUrl: string): Promise<void> {
+    const asset = await this.updateAsset(id, kind, assetUrl, (a) => {
+      const { archivedAt, ...rest } = a;
+      return rest;
+    });
+    if (asset) {
+      await this.pushHistory(id, { action: 'restauration', note: `Fichier restauré (${ASSET_KIND_LABELS[kind]}) : ${asset.name}` });
+      if (kind === 'receiptDocs') {
+        await this.applyReceiptPricing(id);
+      }
+    }
+  }
+
+  /** Permanently deletes an archived asset — from Cloudinary (best-effort) and from Firestore. */
+  async deleteAssetPermanently(id: string, kind: AssetKind, assetUrl: string): Promise<void> {
+    const attempt = await this.fetchAttempt(id);
+    if (!attempt) return;
+    const asset = attempt[kind].find((a) => a.url === assetUrl);
+    if (!asset) return;
+
+    try {
+      await this.cloudinaryService.destroy(asset.path, CloudinaryService.resourceTypeFor(asset.contentType));
+    } catch (error) {
+      console.error('Cloudinary destroy failed, removing metadata anyway', error);
+    }
+
+    const remaining = attempt[kind].filter((a) => a.url !== assetUrl);
+    await updateDoc(doc(db, ATTEMPTS_COLLECTION, id), { [kind]: remaining, updatedAt: Date.now() });
+    await this.pushHistory(id, { action: 'suppression', note: `Fichier supprimé définitivement (${ASSET_KIND_LABELS[kind]}) : ${asset.name}` });
+  }
+
+  /**
+   * Permanently deletes any asset that has sat in the Corbeille for more than ASSET_RETENTION_DAYS.
+   * Called opportunistically whenever a reservation is opened — there's no server-side cron here,
+   * so cleanup happens lazily on the admin's next visit rather than on a fixed schedule.
+   */
+  async sweepExpiredArchives(attempt: Attempt): Promise<void> {
+    if (!attempt.id) return;
+    const cutoff = Date.now() - ASSET_RETENTION_DAYS * 24 * 60 * 60 * 1000;
+    const kinds: AssetKind[] = ['departureVideos', 'returnVideos', 'vehicleDocs', 'clientDocs', 'contractDocs', 'receiptDocs'];
+    for (const kind of kinds) {
+      const expired = attempt[kind].filter((a) => a.archivedAt && a.archivedAt < cutoff);
+      for (const asset of expired) {
+        await this.deleteAssetPermanently(attempt.id, kind, asset.url);
+      }
+    }
+  }
+
+  private async updateAsset(
+    id: string,
+    kind: AssetKind,
+    assetUrl: string,
+    mutate: (asset: AttemptAsset) => AttemptAsset,
+  ): Promise<AttemptAsset | null> {
+    const attempt = await this.fetchAttempt(id);
+    if (!attempt) return null;
+    let mutated: AttemptAsset | null = null;
+    const updated = attempt[kind].map((a) => {
+      if (a.url !== assetUrl) return a;
+      mutated = mutate(a);
+      return mutated;
+    });
+    if (!mutated) return null;
+    await updateDoc(doc(db, ATTEMPTS_COLLECTION, id), { [kind]: updated, updatedAt: Date.now() });
+    return mutated;
+  }
+
+  /**
+   * Contract price is informational only — it can be renegotiated after signing, so it's never
+   * trusted as confirmed revenue. It only fills in the displayed total while no receipt exists yet.
+   */
   private async applyContractPricing(id: string, contract: ContractExtraction): Promise<void> {
     if (contract.totalPrice == null || contract.totalPrice <= 0) {
       return;
     }
     const attempt = await this.fetchAttempt(id);
-    if (!attempt) {
+    if (!attempt || attempt.pricing.source === 'recus') {
       return;
     }
     const pricing = {
@@ -242,7 +343,45 @@ export class AttemptsService {
     await updateDoc(doc(db, ATTEMPTS_COLLECTION, id), { pricing, updatedAt: Date.now() });
     await this.pushHistory(id, {
       action: 'prix',
-      note: `Prix confirmé depuis le contrat : ${contract.totalPrice} DT`,
+      note: `Prix (non confirmé) lu depuis le contrat : ${contract.totalPrice} DT`,
+    });
+  }
+
+  /**
+   * Financial receipts are the only trusted source of confirmed revenue — money actually paid
+   * or received, unlike a contract price which can change after signing. Sums every receipt
+   * uploaded so far; as long as at least one receipt has a readable amount, it wins over the
+   * contract/estimation as the reservation's pricing source.
+   */
+  private async applyReceiptPricing(id: string): Promise<void> {
+    const attempt = await this.fetchAttempt(id);
+    if (!attempt) {
+      return;
+    }
+    const amounts = attempt.receiptDocs
+      .filter((a) => !a.archivedAt)
+      .map((a) => a.receiptInfo?.amountPaid)
+      .filter((v): v is number => typeof v === 'number' && v > 0);
+    if (amounts.length === 0) {
+      // No active receipt left (e.g. the only one was archived) — fall back to the contract
+      // estimate if the source was 'recus', otherwise leave pricing untouched.
+      if (attempt.pricing.source === 'recus') {
+        const fallback = calculatePricing(attempt.category, attempt.startDate, attempt.endDate);
+        await updateDoc(doc(db, ATTEMPTS_COLLECTION, id), { pricing: fallback, updatedAt: Date.now() });
+        await this.pushHistory(id, { action: 'prix', note: 'Revenu confirmé retiré (reçu archivé) — retour à une estimation' });
+      }
+      return;
+    }
+    const total = amounts.reduce((sum, v) => sum + v, 0);
+    const pricing = {
+      ...attempt.pricing,
+      total,
+      source: 'recus' as const,
+    };
+    await updateDoc(doc(db, ATTEMPTS_COLLECTION, id), { pricing, updatedAt: Date.now() });
+    await this.pushHistory(id, {
+      action: 'prix',
+      note: `Revenu confirmé via reçu(s) : ${total} DT`,
     });
   }
 
@@ -323,6 +462,7 @@ export class AttemptsService {
   computeClientChecklist(clientDocs: AttemptAsset[]): ClientDocChecklist {
     const has = (keywords: string[]) =>
       clientDocs.some((a) => {
+        if (a.archivedAt) return false;
         const type = (a.extracted?.documentType ?? '').toLowerCase();
         return keywords.some((k) => type.includes(k));
       });
@@ -336,10 +476,11 @@ export class AttemptsService {
   computeVehicleChecklist(vehicleDocs: AttemptAsset[], departureVideos: AttemptAsset[], returnVideos: AttemptAsset[]): VehicleDocChecklist {
     const has = (keywords: string[]) =>
       vehicleDocs.some((a) => {
+        if (a.archivedAt) return false;
         const type = (a.extracted?.documentType ?? '').toLowerCase();
         return keywords.some((k) => type.includes(k));
       });
-    const hasPlate = [...departureVideos, ...returnVideos].some((a) => !!a.plateInfo?.plateNumber);
+    const hasPlate = [...departureVideos, ...returnVideos].some((a) => !a.archivedAt && !!a.plateInfo?.plateNumber);
     return {
       carteGrise: has(['carte grise']),
       matricule: has(['matricule']) || hasPlate,

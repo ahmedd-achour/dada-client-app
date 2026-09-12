@@ -33,6 +33,34 @@ export class CloudinaryService {
     return { url: data.secure_url as string, publicId: data.public_id as string };
   }
 
+  /** Permanently removes a file from Cloudinary. Best-effort — callers shouldn't block on failures here. */
+  async destroy(publicId: string, resourceType: 'image' | 'video' | 'raw'): Promise<void> {
+    const timestamp = Math.floor(Date.now() / 1000);
+    const signature = await this.sign({ public_id: publicId, timestamp });
+
+    const formData = new FormData();
+    formData.append('public_id', publicId);
+    formData.append('api_key', runtimeConfig.cloudinaryApiKey);
+    formData.append('timestamp', String(timestamp));
+    formData.append('signature', signature);
+
+    const response = await fetch(
+      `https://api.cloudinary.com/v1_1/${runtimeConfig.cloudinaryCloudName}/${resourceType}/destroy`,
+      { method: 'POST', body: formData },
+    );
+
+    if (!response.ok) {
+      throw new Error(`Cloudinary destroy failed: ${await response.text()}`);
+    }
+  }
+
+  /** Maps a stored MIME type to the Cloudinary resource type it would have been uploaded as. */
+  static resourceTypeFor(contentType: string): 'image' | 'video' | 'raw' {
+    if (contentType.startsWith('image/')) return 'image';
+    if (contentType.startsWith('video/') || contentType.startsWith('audio/')) return 'video';
+    return 'raw';
+  }
+
   /** Cloudinary's signing algorithm: sort params, join as key=value&..., append api_secret, SHA-1 hex. */
   private async sign(params: Record<string, string | number>): Promise<string> {
     const toSign =

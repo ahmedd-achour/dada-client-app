@@ -30,8 +30,10 @@ export class Stats implements AfterViewInit, OnChanges, OnDestroy {
   }
 
   protected get totalRevenue(): number {
+    // Only money actually received (via uploaded receipts) counts as confirmed revenue —
+    // a contract price can be renegotiated after signing, so it's excluded here.
     return this.attempts
-      .filter((a) => a.status !== 'annule' && a.pricing?.source === 'contrat')
+      .filter((a) => a.status !== 'annule' && a.pricing?.source === 'recus')
       .reduce((sum, a) => sum + (a.pricing?.total ?? 0), 0);
   }
 
