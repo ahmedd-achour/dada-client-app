@@ -1,7 +1,29 @@
+.dash-head h1 {
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  color: var(--ink);
+}
+
+.dash-head p {
+  margin-top: 6px;
+  color: var(--ink-muted);
+}
+
+.empty {
+  margin-top: 20px;
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--ink-muted);
+  background: var(--surface);
+  border-radius: 20px;
+  border: 1px solid var(--line);
+}
+
 .stats-tiles {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 14px;
+  margin-top: 20px;
   margin-bottom: 20px;
 }
 

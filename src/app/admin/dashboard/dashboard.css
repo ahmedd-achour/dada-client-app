@@ -88,8 +88,9 @@
 }
 
 .attempt-row {
+  position: relative;
   display: grid;
-  grid-template-columns: 1.6fr 1fr 0.8fr 0.9fr;
+  grid-template-columns: 1.6fr 1fr 0.8fr 0.9fr auto;
   align-items: center;
   gap: 12px;
   background: var(--surface);
@@ -98,6 +99,26 @@
   padding: 16px 20px;
   color: var(--ink);
   transition: border-color 0.15s ease, transform 0.1s ease;
+}
+
+.archive-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1.5px solid var(--line);
+  background: var(--bg-soft);
+  color: var(--ink-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.archive-btn:hover,
+.archive-btn:active {
+  border-color: var(--primary);
+  color: var(--primary);
 }
 
 .attempt-row:hover {
@@ -183,9 +204,16 @@
     grid-template-columns: 1fr;
     justify-items: start;
     gap: 6px;
+    padding-right: 56px;
   }
 
   .attempt-status {
     justify-self: start;
+  }
+
+  .archive-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
   }
 }

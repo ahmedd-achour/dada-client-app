@@ -47,6 +47,9 @@ export interface ReceiptExtraction {
 
 export const ASSET_RETENTION_DAYS = 30;
 
+/** Same retention window as assets, but for a whole archived reservation — see [[Attempt.archivedAt]]. */
+export const ATTEMPT_RETENTION_DAYS = 30;
+
 export interface AttemptAsset {
   url: string;
   path: string;
@@ -128,4 +131,11 @@ export interface Attempt {
   history: AttemptHistoryEntry[];
   createdAt: number;
   updatedAt: number;
+  /**
+   * Set when the whole reservation is archived instead of deleted outright — it disappears from
+   * the home list but stays recoverable from the Archives tab. Cleared on restore. A reservation
+   * archived for more than ATTEMPT_RETENTION_DAYS becomes eligible for permanent deletion.
+   * Re-archiving (after a restore) resets the timer.
+   */
+  archivedAt?: number;
 }

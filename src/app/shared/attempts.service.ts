@@ -4,6 +4,8 @@ import {
   addDoc,
   arrayUnion,
   collection,
+  deleteDoc,
+  deleteField,
   doc,
   DocumentData,
   getDoc,
@@ -21,6 +23,7 @@ import { GeminiService } from './gemini.service';
 import { PdfReportService } from './pdf-report.service';
 import {
   ASSET_RETENTION_DAYS,
+  ATTEMPT_RETENTION_DAYS,
   Attempt,
   AttemptAsset,
   AttemptHistoryEntry,
@@ -301,6 +304,55 @@ export class AttemptsService {
       for (const asset of expired) {
         await this.deleteAssetPermanently(attempt.id, kind, asset.url);
       }
+    }
+  }
+
+  /** Moves a whole reservation to the Archives (soft-delete) instead of deleting it outright. */
+  async archiveAttempt(id: string): Promise<void> {
+    await updateDoc(doc(db, ATTEMPTS_COLLECTION, id), { archivedAt: Date.now(), updatedAt: Date.now() });
+    await this.pushHistory(id, { action: 'archive', note: 'Réservation archivée' });
+  }
+
+  /** Restores an archived reservation — clears the archive timestamp, resetting the retention timer if re-archived later. */
+  async restoreAttempt(id: string): Promise<void> {
+    await updateDoc(doc(db, ATTEMPTS_COLLECTION, id), { archivedAt: deleteField(), updatedAt: Date.now() });
+    await this.pushHistory(id, { action: 'restauration', note: 'Réservation restaurée' });
+  }
+
+  /** Permanently deletes an archived reservation — its files from Cloudinary (best-effort) and its Firestore document. */
+  async deleteAttemptPermanently(id: string): Promise<void> {
+    const attempt = await this.fetchAttempt(id);
+    if (!attempt) return;
+
+    const assetKinds: AssetKind[] = ['departureVideos', 'returnVideos', 'vehicleDocs', 'clientDocs', 'contractDocs', 'receiptDocs'];
+    const assets = [
+      ...assetKinds.flatMap((kind) => attempt[kind]),
+      attempt.departureReport,
+      attempt.returnReport,
+      attempt.comparisonReport,
+    ].filter((a): a is AttemptAsset => !!a);
+
+    for (const asset of assets) {
+      try {
+        await this.cloudinaryService.destroy(asset.path, CloudinaryService.resourceTypeFor(asset.contentType));
+      } catch (error) {
+        console.error('Cloudinary destroy failed, deleting reservation anyway', error);
+      }
+    }
+
+    await deleteDoc(doc(db, ATTEMPTS_COLLECTION, id));
+  }
+
+  /**
+   * Permanently deletes any reservation that has sat in the Archives for more than ATTEMPT_RETENTION_DAYS.
+   * Called opportunistically whenever the Archives tab is opened — there's no server-side cron here,
+   * so cleanup happens lazily on the admin's next visit rather than on a fixed schedule.
+   */
+  async sweepExpiredAttempts(attempts: Attempt[]): Promise<void> {
+    const cutoff = Date.now() - ATTEMPT_RETENTION_DAYS * 24 * 60 * 60 * 1000;
+    const expired = attempts.filter((a) => a.archivedAt && a.archivedAt < cutoff);
+    for (const attempt of expired) {
+      if (attempt.id) await this.deleteAttemptPermanently(attempt.id);
     }
   }
 

@@ -1,5 +1,7 @@
-import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, Signal, ViewChild, computed, effect } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Chart, ChartConfiguration } from 'chart.js/auto';
+import { AttemptsService } from '../../shared/attempts.service';
 import { ATTEMPT_STATUSES, Attempt } from '../../shared/attempt.model';
 
 const STATUS_COLORS: Record<string, string> = {
@@ -15,9 +17,7 @@ const STATUS_COLORS: Record<string, string> = {
   templateUrl: './stats.html',
   styleUrl: './stats.css',
 })
-export class Stats implements AfterViewInit, OnChanges, OnDestroy {
-  @Input({ required: true }) attempts: Attempt[] = [];
-
+export class Stats implements AfterViewInit, OnDestroy {
   @ViewChild('statusCanvas') statusCanvasRef?: ElementRef<HTMLCanvasElement>;
   @ViewChild('categoryCanvas') categoryCanvasRef?: ElementRef<HTMLCanvasElement>;
 
@@ -25,33 +25,46 @@ export class Stats implements AfterViewInit, OnChanges, OnDestroy {
   private categoryChart?: Chart;
   private viewReady = false;
 
+  private readonly attemptsSignal: Signal<Attempt[] | null>;
+  protected readonly loading: Signal<boolean>;
+  // Archived reservations don't count towards live stats — they're no longer active business.
+  protected readonly attempts: Signal<Attempt[]>;
+
+  constructor(private readonly attemptsService: AttemptsService) {
+    this.attemptsSignal = toSignal(this.attemptsService.watchAttempts(), { initialValue: null });
+    this.loading = computed(() => this.attemptsSignal() === null);
+    this.attempts = computed(() => (this.attemptsSignal() ?? []).filter((a) => !a.archivedAt));
+
+    effect(() => {
+      const data = this.attempts();
+      if (this.viewReady) {
+        this.renderCharts(data);
+      }
+    });
+  }
+
   protected get totalCount(): number {
-    return this.attempts.length;
+    return this.attempts().length;
   }
 
   protected get totalRevenue(): number {
     // Only money actually received (via uploaded receipts) counts as confirmed revenue —
     // a contract price can be renegotiated after signing, so it's excluded here.
-    return this.attempts
+    return this.attempts()
       .filter((a) => a.status !== 'annule' && a.pricing?.source === 'recus')
       .reduce((sum, a) => sum + (a.pricing?.total ?? 0), 0);
   }
 
   protected get cancelRate(): number {
-    if (!this.attempts.length) return 0;
-    const cancelled = this.attempts.filter((a) => a.status === 'annule').length;
-    return Math.round((cancelled / this.attempts.length) * 100);
+    const all = this.attempts();
+    if (!all.length) return 0;
+    const cancelled = all.filter((a) => a.status === 'annule').length;
+    return Math.round((cancelled / all.length) * 100);
   }
 
   ngAfterViewInit(): void {
     this.viewReady = true;
-    this.renderCharts();
-  }
-
-  ngOnChanges(): void {
-    if (this.viewReady) {
-      this.renderCharts();
-    }
+    this.renderCharts(this.attempts());
   }
 
   ngOnDestroy(): void {
@@ -59,16 +72,16 @@ export class Stats implements AfterViewInit, OnChanges, OnDestroy {
     this.categoryChart?.destroy();
   }
 
-  private renderCharts(): void {
-    this.renderStatusChart();
-    this.renderCategoryChart();
+  private renderCharts(attempts: Attempt[]): void {
+    this.renderStatusChart(attempts);
+    this.renderCategoryChart(attempts);
   }
 
-  private renderStatusChart(): void {
+  private renderStatusChart(attempts: Attempt[]): void {
     const canvas = this.statusCanvasRef?.nativeElement;
     if (!canvas) return;
 
-    const counts = ATTEMPT_STATUSES.map((s) => this.attempts.filter((a) => a.status === s.value).length);
+    const counts = ATTEMPT_STATUSES.map((s) => attempts.filter((a) => a.status === s.value).length);
     const config: ChartConfiguration = {
       type: 'doughnut',
       data: {
@@ -92,12 +105,12 @@ export class Stats implements AfterViewInit, OnChanges, OnDestroy {
     this.statusChart = new Chart(canvas, config);
   }
 
-  private renderCategoryChart(): void {
+  private renderCategoryChart(attempts: Attempt[]): void {
     const canvas = this.categoryCanvasRef?.nativeElement;
     if (!canvas) return;
 
     const byCategory = new Map<string, number>();
-    for (const attempt of this.attempts) {
+    for (const attempt of attempts) {
       byCategory.set(attempt.category, (byCategory.get(attempt.category) ?? 0) + 1);
     }
     const labels = Array.from(byCategory.keys());

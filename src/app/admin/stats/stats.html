@@ -1,29 +1,40 @@
-<div class="stats-tiles">
-  <div class="tile">
-    <span class="tile-label">Réservations</span>
-    <span class="tile-value">{{ totalCount }}</span>
-  </div>
-  <div class="tile">
-    <span class="tile-label">Revenu confirmé</span>
-    <span class="tile-value">{{ totalRevenue }} DT</span>
-  </div>
-  <div class="tile">
-    <span class="tile-label">Taux d'annulation</span>
-    <span class="tile-value">{{ cancelRate }}%</span>
-  </div>
+<div class="dash-head">
+  <h1>Statistiques</h1>
+  <p>Vue d'ensemble des réservations actives.</p>
 </div>
 
-<div class="stats-charts">
-  <div class="chart-card">
-    <h3>Par statut</h3>
-    <div class="chart-box">
-      <canvas #statusCanvas></canvas>
+@if (loading()) {
+  <div class="empty">Chargement...</div>
+} @else if (attempts().length === 0) {
+  <div class="empty">Aucune réservation pour le moment.</div>
+} @else {
+  <div class="stats-tiles">
+    <div class="tile">
+      <span class="tile-label">Réservations</span>
+      <span class="tile-value">{{ totalCount }}</span>
+    </div>
+    <div class="tile">
+      <span class="tile-label">Revenu confirmé</span>
+      <span class="tile-value">{{ totalRevenue }} DT</span>
+    </div>
+    <div class="tile">
+      <span class="tile-label">Taux d'annulation</span>
+      <span class="tile-value">{{ cancelRate }}%</span>
     </div>
   </div>
-  <div class="chart-card">
-    <h3>Par catégorie</h3>
-    <div class="chart-box">
-      <canvas #categoryCanvas></canvas>
+
+  <div class="stats-charts">
+    <div class="chart-card">
+      <h3>Par statut</h3>
+      <div class="chart-box">
+        <canvas #statusCanvas></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <h3>Par catégorie</h3>
+      <div class="chart-box">
+        <canvas #categoryCanvas></canvas>
+      </div>
     </div>
   </div>
-</div>
+}

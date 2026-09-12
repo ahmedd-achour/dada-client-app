@@ -1,0 +1,43 @@
+<div class="dash-head">
+  <h1>Archives</h1>
+  <p>Réservations archivées — restaurables ou supprimables définitivement après 30 jours.</p>
+</div>
+
+@if (loading()) {
+  <div class="empty">Chargement...</div>
+} @else if (archived().length === 0) {
+  <div class="empty">Aucune réservation archivée.</div>
+} @else {
+  <div class="archive-list">
+    @for (attempt of archived(); track attempt.id) {
+      <div class="archive-row">
+        <div class="archive-main">
+          <a class="archive-name" [routerLink]="['/admin', attempt.id]">{{ attempt.customerName }}</a>
+          <span class="archive-sub">{{ attempt.customerPhone }} · {{ attempt.category }}</span>
+          <span class="archive-sub">Archivée le {{ attempt.archivedAt | date: 'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+        <div class="archive-status">
+          @if (isDeletable(attempt.archivedAt!)) {
+            <span class="badge badge-expired">Supprimable</span>
+          } @else {
+            <span class="badge">{{ daysLeft(attempt.archivedAt!) }} j restants</span>
+          }
+        </div>
+        <div class="archive-actions">
+          <button type="button" class="btn btn-ghost btn-sm" [disabled]="busyId() === attempt.id" (click)="restore(attempt)">
+            Restaurer
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger btn-sm"
+            [disabled]="busyId() === attempt.id || !isDeletable(attempt.archivedAt!)"
+            [title]="isDeletable(attempt.archivedAt!) ? '' : 'Disponible dans ' + daysLeft(attempt.archivedAt!) + ' jour(s)'"
+            (click)="deleteForever(attempt)"
+          >
+            Supprimer
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+}
