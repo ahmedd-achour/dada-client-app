@@ -7,6 +7,8 @@ import { Stats } from './admin/stats/stats';
 import { Archive } from './admin/archive/archive';
 import { AttemptForm } from './admin/attempt-form/attempt-form';
 import { AttemptDetail } from './admin/attempt-detail/attempt-detail';
+import { FleetAdmin } from './admin/fleet-admin/fleet-admin';
+import { FleetForm } from './admin/fleet-form/fleet-form';
 import { authGuard } from './admin/auth.guard';
 
 export const routes: Routes = [
@@ -20,6 +22,9 @@ export const routes: Routes = [
       { path: '', component: Dashboard },
       { path: 'stats', component: Stats },
       { path: 'archive', component: Archive },
+      { path: 'fleet', component: FleetAdmin },
+      { path: 'fleet/new', component: FleetForm },
+      { path: 'fleet/:id', component: FleetForm },
       { path: 'new', component: AttemptForm },
       { path: ':id', component: AttemptDetail },
     ],

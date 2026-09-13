@@ -24,9 +24,13 @@ export class AdminShell {
 
     this.isDetailView = computed(() => {
       const url = navigationEnd()?.urlAfterRedirects ?? this.router.url;
-      const match = /^\/admin\/([^/?]+)/.exec(url);
+      const match = /^\/admin\/([^/?]+)(?:\/([^/?]+))?/.exec(url);
       if (!match) return false;
-      return match[1] !== 'stats' && match[1] !== 'archive';
+      const [, firstSegment, secondSegment] = match;
+      // A second segment (e.g. fleet/new, fleet/abc123) is always a sub-page — back button.
+      if (secondSegment) return true;
+      // A single segment is a sub-page unless it's one of the shell's own top-level tabs.
+      return !['stats', 'archive', 'fleet'].includes(firstSegment);
     });
   }
 

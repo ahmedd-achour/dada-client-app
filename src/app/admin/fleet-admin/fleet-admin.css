@@ -1,0 +1,145 @@
+.fleet-admin-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.fleet-admin-head h1 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  color: var(--ink);
+}
+
+.fleet-admin-head p {
+  margin-top: 6px;
+  color: var(--ink-muted);
+  font-size: 0.88rem;
+  max-width: 46ch;
+}
+
+.empty {
+  padding: 60px;
+  text-align: center;
+  color: var(--ink-muted);
+  background: var(--surface);
+  border-radius: 20px;
+  border: 1px solid var(--line);
+}
+
+.fleet-admin-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.fleet-admin-row {
+  display: grid;
+  grid-template-columns: 64px 1.6fr 1fr auto auto;
+  align-items: center;
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 12px 18px;
+}
+
+.fleet-admin-row.hidden-row {
+  opacity: 0.6;
+}
+
+.fleet-admin-thumb {
+  width: 64px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 10px;
+  background: var(--bg-soft);
+}
+
+.fleet-admin-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.fleet-admin-sub {
+  font-size: 0.8rem;
+  color: var(--ink-muted);
+  margin-top: 2px;
+}
+
+.fleet-admin-price {
+  font-family: var(--font-display);
+  font-weight: 800;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.fleet-admin-price span {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.72rem;
+  color: var(--ink-muted);
+}
+
+.visibility-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1.5px solid var(--line);
+  background: var(--bg-soft);
+  color: var(--ink-muted);
+  font-weight: 700;
+  font-size: 0.8rem;
+  padding: 8px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.visibility-toggle.is-public {
+  background: var(--primary-light);
+  border-color: var(--primary);
+  color: var(--primary-dark);
+}
+
+.visibility-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+@media (max-width: 760px) {
+  .fleet-admin-row {
+    grid-template-columns: 56px 1fr;
+    grid-template-areas:
+      'thumb info'
+      'price price'
+      'toggle edit';
+    row-gap: 10px;
+  }
+
+  .fleet-admin-thumb {
+    grid-area: thumb;
+  }
+
+  .fleet-admin-info {
+    grid-area: info;
+  }
+
+  .fleet-admin-price {
+    grid-area: price;
+  }
+
+  .visibility-toggle {
+    grid-area: toggle;
+    justify-self: start;
+  }
+
+  .fleet-admin-row a.btn {
+    grid-area: edit;
+    justify-self: end;
+  }
+}

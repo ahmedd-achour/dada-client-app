@@ -1,0 +1,99 @@
+<div class="form-card">
+  <h1>{{ isEdit ? 'Modifier le véhicule' : 'Ajouter un véhicule' }}</h1>
+  <p class="sub">Ces informations s'affichent directement sur le site public — flotte et catégories restent synchronisées automatiquement.</p>
+
+  @if (loading()) {
+    <p class="loading-msg">Chargement...</p>
+  } @else {
+    <div class="row">
+      <div class="field">
+        <label for="brand">Marque</label>
+        <input id="brand" type="text" placeholder="Renault" [ngModel]="brand()" (ngModelChange)="brand.set($event)" />
+      </div>
+      <div class="field">
+        <label for="model">Modèle</label>
+        <input id="model" type="text" placeholder="Clio 5" [ngModel]="model()" (ngModelChange)="model.set($event)" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="year">Année</label>
+        <input id="year" type="number" [ngModel]="year()" (ngModelChange)="year.set($event)" />
+      </div>
+      <div class="field">
+        <label for="bodyType">Type de carrosserie</label>
+        <input id="bodyType" type="text" placeholder="Citadine" [ngModel]="bodyType()" (ngModelChange)="bodyType.set($event)" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="gamme">Gamme</label>
+        <select id="gamme" [ngModel]="gamme()" (ngModelChange)="gamme.set($event)">
+          @for (option of gammeOptions; track option) {
+            <option [value]="option">{{ option }}</option>
+          }
+        </select>
+      </div>
+      <div class="field">
+        <label for="fuel">Carburant</label>
+        <select id="fuel" [ngModel]="fuel()" (ngModelChange)="fuel.set($event)">
+          @for (option of fuelOptions; track option) {
+            <option [value]="option">{{ option }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="seats">Places</label>
+        <input id="seats" type="number" min="1" [ngModel]="seats()" (ngModelChange)="seats.set($event)" />
+      </div>
+      <div class="field">
+        <label for="transmission">Transmission</label>
+        <input id="transmission" type="text" placeholder="Manuelle" [ngModel]="transmission()" (ngModelChange)="transmission.set($event)" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="unitCount">Nombre d'unités</label>
+        <input id="unitCount" type="number" min="1" [ngModel]="unitCount()" (ngModelChange)="unitCount.set($event)" />
+      </div>
+      <div class="field">
+        <label for="dailyFrom">Prix — à partir de (DT / jour)</label>
+        <input id="dailyFrom" type="number" min="0" [ngModel]="dailyFrom()" (ngModelChange)="dailyFrom.set($event)" />
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="image">Image (URL)</label>
+      <input id="image" type="text" placeholder="https://..." [ngModel]="image()" (ngModelChange)="image.set($event)" />
+    </div>
+
+    <div class="field">
+      <label for="bookingCategory">Catégorie de réservation</label>
+      <select id="bookingCategory" [ngModel]="bookingCategory()" (ngModelChange)="bookingCategory.set($event)">
+        @for (category of bookingCategories; track category.name) {
+          <option [value]="category.name">{{ category.name }}</option>
+        }
+      </select>
+      <span class="hint">Détermine la catégorie présélectionnée quand un client réserve ce véhicule.</span>
+    </div>
+
+    <label class="visibility-field">
+      <input type="checkbox" [ngModel]="isPublic()" (ngModelChange)="isPublic.set($event)" />
+      <span>Visible sur le site public</span>
+    </label>
+
+    @if (error()) {
+      <p class="error">{{ error() }}</p>
+    }
+
+    <button type="button" class="btn btn-primary btn-lg btn-block" [disabled]="!isValid() || saving()" (click)="save()">
+      {{ saving() ? 'Enregistrement...' : isEdit ? 'Enregistrer les modifications' : 'Ajouter le véhicule' }}
+    </button>
+  }
+</div>

@@ -1,0 +1,37 @@
+<div class="fleet-admin-head">
+  <div>
+    <h1>Gérer la flotte</h1>
+    <p>Ajoutez, modifiez ou masquez un véhicule. Rien n'est jamais supprimé — un véhicule masqué disparaît du site public mais reste ici.</p>
+  </div>
+  <a routerLink="/admin/fleet/new" class="btn btn-primary btn-lg">+ Ajouter un véhicule</a>
+</div>
+
+@if (vehicles() === null) {
+  <div class="empty">Chargement...</div>
+} @else if (vehicles()!.length === 0) {
+  <div class="empty">Aucun véhicule pour le moment.</div>
+} @else {
+  <div class="fleet-admin-list">
+    @for (vehicle of vehicles()!; track vehicle.id) {
+      <div class="fleet-admin-row" [class.hidden-row]="!vehicle.isPublic">
+        <img [src]="vehicle.image" [alt]="vehicle.brand + ' ' + vehicle.model" class="fleet-admin-thumb" />
+        <div class="fleet-admin-info">
+          <div class="fleet-admin-name">{{ vehicle.brand }} {{ vehicle.model }}</div>
+          <div class="fleet-admin-sub">{{ vehicle.gamme }} · {{ vehicle.bodyType }} · {{ vehicle.unitCount }} unité(s)</div>
+        </div>
+        <div class="fleet-admin-price">dès {{ vehicle.dailyFrom }} DT<span>/jour</span></div>
+        <button
+          type="button"
+          class="visibility-toggle"
+          [class.is-public]="vehicle.isPublic"
+          (click)="toggleVisibility(vehicle)"
+          [title]="vehicle.isPublic ? 'Rendre privé' : 'Rendre public'"
+        >
+          <span class="visibility-dot"></span>
+          {{ vehicle.isPublic ? 'Public' : 'Privé' }}
+        </button>
+        <a [routerLink]="['/admin/fleet', vehicle.id]" class="btn btn-ghost btn-sm">Modifier</a>
+      </div>
+    }
+  </div>
+}

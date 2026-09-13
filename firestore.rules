@@ -9,6 +9,17 @@ service cloud.firestore {
       allow read, update, delete: if request.auth != null;
     }
 
+    // Public catalog data for the client-side fleet showcase. Never hard-deleted — admins only
+    // ever flip isPublic to hide a vehicle, so a public visitor can only ever read documents
+    // explicitly marked public, while a verified admin can see and manage the full inventory.
+    match /fleets/{vehicleId} {
+      allow read: if resource.data.isPublic == true
+        || (request.auth != null && exists(/databases/$(database)/documents/admins/$(request.auth.uid)));
+      allow create, update: if request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+      allow delete: if false;
+    }
+
     match /admins/{uid} {
       // Any signed-in admin can see the team's email list (used to notify everyone).
       allow read: if request.auth != null;

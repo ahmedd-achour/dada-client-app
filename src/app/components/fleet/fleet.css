@@ -2,13 +2,35 @@
   background: var(--bg-soft);
 }
 
+.fleet-subhead {
+  text-align: center;
+  max-width: 560px;
+  margin: 0 auto 32px;
+}
+
+.fleet-subhead h3 {
+  font-size: clamp(1.3rem, 2.4vw, 1.7rem);
+}
+
+.fleet-subhead p {
+  margin-top: 10px;
+  color: var(--ink-muted);
+}
+
+.fleet-subhead-search {
+  margin-top: 64px;
+  margin-bottom: 20px;
+}
+
+/* Category grid (restored) */
 .fleet-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 26px;
+  margin-bottom: 8px;
 }
 
-.fleet-card {
+.fleet-cat-card {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 22px;
@@ -17,7 +39,7 @@
   flex-direction: column;
 }
 
-.fleet-media {
+.fleet-cat-media {
   height: 170px;
   background: linear-gradient(160deg, var(--bg-soft), var(--primary-light));
   display: flex;
@@ -27,16 +49,98 @@
   padding: 16px;
 }
 
-.fleet-media img {
+.fleet-cat-media img {
   max-height: 100%;
   max-width: 100%;
   object-fit: contain;
 }
 
+.fleet-cat-body {
+  padding: 24px 24px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+}
+
+/* Search box */
+.fleet-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 480px;
+  margin: 0 auto 32px;
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: 14px;
+  padding: 12px 16px;
+  color: var(--ink-muted);
+}
+
+.fleet-search:focus-within {
+  border-color: var(--primary);
+}
+
+.fleet-search input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: var(--ink);
+}
+
+.fleet-no-results {
+  text-align: center;
+  color: var(--ink-muted);
+  padding: 40px 0;
+}
+
+.fleet-results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 22px;
+}
+
+/* Shared vehicle card (search results + carousel) */
+.fleet-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.fleet-sub {
+  margin-top: -10px;
+  font-size: 0.8rem;
+  color: var(--ink-muted);
+  font-weight: 600;
+}
+
+.fleet-specs {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  color: var(--ink-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.fleet-specs span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.fleet-specs svg {
+  color: var(--primary);
+  flex: none;
+}
+
 .fleet-badge {
   position: absolute;
-  top: 16px;
-  left: 16px;
+  top: 14px;
+  left: 14px;
   background: var(--surface);
   color: var(--ink);
   font-size: 0.7rem;
@@ -46,37 +150,16 @@
   border: 1px solid var(--line);
 }
 
-.fleet-body {
-  padding: 24px 24px 26px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  flex: 1;
-}
-
-.fleet-name {
-  font-family: var(--font-display);
+.fleet-units {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 0.68rem;
   font-weight: 700;
-  font-size: 1.2rem;
-}
-
-.fleet-specs {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-  color: var(--ink-muted);
-  font-size: 0.82rem;
-  font-weight: 600;
-}
-
-.fleet-specs span {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.fleet-specs svg {
-  color: var(--primary);
+  padding: 5px 10px;
+  border-radius: 999px;
 }
 
 .fleet-foot {
@@ -91,12 +174,90 @@
 .fleet-price .amount {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: var(--ink);
 }
 
 .fleet-price .unit {
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   color: var(--ink-muted);
   font-weight: 600;
+}
+
+/* Auto-scrolling carousel — pure CSS marquee, no JS driving the motion. loopUnits duplicates
+   the list, so translateX(-50%) always lands on an identical copy: the loop never visibly resets. */
+.carousel {
+  position: relative;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent 0, #000 40px, #000 calc(100% - 40px), transparent 100%);
+}
+
+.carousel-track {
+  display: flex;
+  gap: 22px;
+  width: max-content;
+  padding: 4px 4px 16px;
+  animation: fleet-marquee 140s linear infinite;
+}
+
+.carousel:hover .carousel-track,
+.carousel:focus-within .carousel-track {
+  animation-play-state: paused;
+}
+
+@keyframes fleet-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carousel-track {
+    animation: none;
+    overflow-x: auto;
+  }
+}
+
+.fleet-card {
+  flex: none;
+  width: 280px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.fleet-media {
+  height: 180px;
+  position: relative;
+  background: var(--bg-soft);
+}
+
+.fleet-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fleet-body {
+  padding: 20px 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex: 1;
+}
+
+@media (max-width: 640px) {
+  .fleet-card {
+    width: 240px;
+  }
+
+  .fleet-subhead-search {
+    margin-top: 48px;
+  }
 }
