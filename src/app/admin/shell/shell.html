@@ -1,9 +1,18 @@
 <div class="admin">
   <header class="admin-bar">
-    <a routerLink="/admin" class="admin-brand">
-      <img src="assets/logo.png" alt="Dada Rent Car" />
-      <span>Espace admin</span>
-    </a>
+    @if (isDetailView()) {
+      <a routerLink="/admin" class="admin-back" aria-label="Retour à la liste">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 18l-6-6 6-6" />
+        </svg>
+        <span>Retour</span>
+      </a>
+    } @else {
+      <a routerLink="/admin" class="admin-brand">
+        <img src="assets/logo.png" alt="Dada Rent Car" />
+        <span>Espace admin</span>
+      </a>
+    }
     <button type="button" class="btn btn-ghost btn-sm" (click)="logout()">Déconnexion</button>
   </header>
   <main class="admin-content">

@@ -11,22 +11,36 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  height: 60px;
+  height: 64px;
   padding: 0 clamp(16px, 4vw, 40px);
   background: var(--surface);
   border-bottom: 1px solid var(--line);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+
+.admin-bar::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--amber));
 }
 
 .admin-brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   color: var(--ink);
   font-weight: 700;
 }
 
 .admin-brand img {
-  height: 28px;
+  height: 30px;
+  padding: 5px;
+  background: var(--bg-soft);
+  border-radius: 10px;
 }
 
 .admin-brand span {
@@ -34,7 +48,35 @@
   font-size: 0.95rem;
   color: var(--ink-muted);
   border-left: 1px solid var(--line);
-  padding-left: 10px;
+  padding-left: 12px;
+}
+
+.admin-back {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink);
+  font-weight: 700;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+}
+
+.admin-back svg {
+  width: 34px;
+  height: 34px;
+  padding: 8px;
+  background: var(--bg-soft);
+  border-radius: 10px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.admin-back:hover {
+  color: var(--primary-dark);
+}
+
+.admin-back:hover svg {
+  background: var(--primary-light);
+  color: var(--primary-dark);
 }
 
 .admin-content {
@@ -48,19 +90,21 @@
   right: 20px;
   bottom: calc(78px + env(safe-area-inset-bottom));
   z-index: 25;
-  width: 52px;
-  height: 52px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
-  background: var(--primary);
+  background: linear-gradient(150deg, var(--primary), var(--primary-dark));
   color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .fab:hover {
-  background: var(--primary-dark);
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.32);
 }
 
 .tab-bar {
@@ -73,9 +117,11 @@
   background: var(--surface);
   border-top: 1px solid var(--line);
   padding-bottom: env(safe-area-inset-bottom);
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.05);
 }
 
 .tab-item {
+  position: relative;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -87,10 +133,21 @@
   color: var(--ink-muted);
   font-size: 0.72rem;
   font-weight: 700;
+  transition: color 0.15s ease;
 }
 
 .tab-item.active {
   color: var(--primary);
+}
+
+.tab-item.active::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  width: 28px;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--primary);
 }
 
 @media (max-width: 640px) {

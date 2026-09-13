@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { AttemptsService } from '../../shared/attempts.service';
 import { FLEET_CATEGORIES } from '../../shared/fleet-categories';
 import { AlertService } from '../../shared/alert.service';
@@ -8,7 +8,7 @@ import { VehiclePicker } from '../../components/vehicle-picker/vehicle-picker';
 
 @Component({
   selector: 'app-attempt-form',
-  imports: [FormsModule, RouterLink, VehiclePicker],
+  imports: [FormsModule, VehiclePicker],
   templateUrl: './attempt-form.html',
   styleUrl: './attempt-form.css',
 })

@@ -92,6 +92,12 @@ footer {
   color: #fff;
 }
 
+.admin-access {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
 @media (max-width: 960px) {
   .footer-grid {
     grid-template-columns: 1fr 1fr;

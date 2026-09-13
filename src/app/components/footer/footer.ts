@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { BUSINESS_INFO, waLink } from '../../shared/business-info';
 
 @Component({
   selector: 'app-footer',
+  imports: [RouterLink],
   templateUrl: './footer.html',
   styleUrl: './footer.css',
 })

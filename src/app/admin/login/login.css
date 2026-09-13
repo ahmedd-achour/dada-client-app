@@ -53,9 +53,70 @@
   box-shadow: 0 4px 10px -4px oklch(20% 0.05 45 / 0.2);
 }
 
+.status-msg {
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ink-muted);
+  margin-bottom: 18px;
+}
+
+.status-msg.status-ok {
+  color: var(--primary-dark);
+}
+
 .hint {
   text-align: center;
   margin-top: 20px;
   font-size: 0.78rem;
   color: var(--ink-muted);
+}
+
+.otp-hint {
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+  margin-bottom: 16px;
+}
+
+.otp-hint strong {
+  color: var(--ink);
+}
+
+.otp-input {
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.5em;
+  padding-left: 0.5em;
+}
+
+.info {
+  color: var(--primary-dark);
+  background: var(--primary-light);
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 10px 14px;
+  border-radius: 12px;
+  margin: -6px 0 16px;
+}
+
+.otp-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+
+.link-btn {
+  border: none;
+  background: none;
+  color: var(--ink-muted);
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+
+.link-btn:hover {
+  color: var(--primary-dark);
 }

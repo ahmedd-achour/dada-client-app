@@ -26,6 +26,7 @@ export const runtimeConfig = {
   get brevoSenderEmail(): string { return value('brevo_sender_email'); },
   get brevoSenderName(): string { return value('brevo_sender_name'); },
   get brevoOwnerEmail(): string { return value('brevo_owner_email'); },
+  get superAdminEmail(): string { return value('super_admin_email'); },
   get cloudinaryApiKey(): string { return value('cloudinary_api_key'); },
   get cloudinaryCloudName(): string { return value('cloudinary_cloud_name'); },
   get cloudinaryApiSecret(): string { return value('cloudinary_api_secret'); },

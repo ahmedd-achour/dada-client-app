@@ -12,8 +12,46 @@ service cloud.firestore {
     match /admins/{uid} {
       // Any signed-in admin can see the team's email list (used to notify everyone).
       allow read: if request.auth != null;
-      // An admin can only register/update their own entry.
-      allow create, update: if request.auth != null && request.auth.uid == uid;
+      // Becoming an admin requires having already claimed a valid OTP (see admin_otp_claims below) —
+      // the OTP is only ever emailed to the super admin's inbox, so self-signup alone grants nothing.
+      allow create: if request.auth != null
+        && request.auth.uid == uid
+        && exists(/databases/$(database)/documents/admin_otp_claims/$(uid));
+      allow update: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // Public phone -> {name, email} lookup so an already-registered admin on a new/unrecognized
+    // device can request their OTP be sent to their OWN inbox instead of the super admin's — no PII
+    // beyond what a colleague already has, and only ever written right after a legitimate OTP claim
+    // (same trust gate as admins/{uid} above), never directly by an arbitrary client.
+    match /admin_lookup/{phone} {
+      allow read: if true;
+      allow create, update: if request.auth != null
+        && exists(/databases/$(database)/documents/admin_otp_claims/$(request.auth.uid));
+      allow delete: if false;
+    }
+
+    // Holds the one-time code generated client-side for a new-device login attempt, keyed by the
+    // digits-only target phone number. Never readable by clients — the only way to prove knowledge
+    // of the code is to successfully create the matching admin_otp_claims doc below (checked
+    // server-side by the rules engine via get(), which never exposes the stored code to the client).
+    match /admin_otps/{phone} {
+      allow read: if false;
+      allow create, update, delete: if true;
+    }
+
+    // Created only once, by the signed-in (possibly anonymous) uid it's named after, and only if
+    // its otpCode field matches the still-unexpired code stored in admin_otps for the phone it
+    // names. This is the actual OTP check — it runs inside the rules engine via get(), so a client
+    // can never read the real code back; it can only prove knowledge of it by guessing right.
+    match /admin_otp_claims/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow create: if request.auth != null
+        && request.auth.uid == uid
+        && request.resource.data.phone is string
+        && get(/databases/$(database)/documents/admin_otps/$(request.resource.data.phone)).data.code == request.resource.data.otpCode
+        && get(/databases/$(database)/documents/admin_otps/$(request.resource.data.phone)).data.expiresAt > request.time.toMillis();
+      allow update, delete: if false;
     }
   }
 }

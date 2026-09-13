@@ -2,7 +2,7 @@ import { Component, Signal, computed, effect, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { AttemptsService, AssetKind, ASSET_KIND_LABELS } from '../../shared/attempts.service';
 import {
   ASSET_RETENTION_DAYS,
@@ -45,7 +45,7 @@ interface ArchivedAssetView {
 
 @Component({
   selector: 'app-attempt-detail',
-  imports: [CommonModule, FormsModule, RouterLink, VehiclePicker, AttemptChat],
+  imports: [CommonModule, FormsModule, VehiclePicker, AttemptChat],
   templateUrl: './attempt-detail.html',
   styleUrl: './attempt-detail.css',
 })

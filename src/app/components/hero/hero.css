@@ -1,13 +1,22 @@
 .hero {
-  padding: 76px 0 40px;
   overflow: hidden;
 }
 
-.hero-inner {
+.hero-grid {
   display: grid;
-  grid-template-columns: 0.9fr 1.2fr;
-  gap: 48px;
+  grid-template-columns: 1fr 1fr;
+  align-items: stretch;
+  min-height: calc(100svh - 76px);
+}
+
+.hero-copy {
+  display: flex;
   align-items: center;
+  padding: 48px clamp(24px, 5vw, 64px);
+}
+
+.hero-copy-inner {
+  max-width: 560px;
 }
 
 .eyebrow {
@@ -25,7 +34,7 @@
 }
 
 .hero-copy h1 {
-  font-size: clamp(2.1rem, 4vw, 3.35rem);
+  font-size: clamp(2.1rem, 3.2vw, 3.35rem);
 }
 
 .hero-copy .lede {
@@ -68,66 +77,40 @@
 
 .hero-art {
   position: relative;
-  height: clamp(460px, 46vw, 680px);
-}
-
-.blob {
-  position: absolute;
-  inset: -2px;
-  background: linear-gradient(150deg, var(--primary-light), var(--bg-soft));
-  animation: blobMorph 9s ease-in-out infinite;
-  z-index: -1;
-}
-
-@keyframes blobMorph {
-  0%,
-  100% {
-    border-radius: 42% 58% 65% 35% / 45% 40% 60% 55%;
-  }
-  50% {
-    border-radius: 58% 42% 35% 65% / 55% 60% 40% 45%;
-  }
+  overflow: hidden;
+  background: var(--bg-soft);
 }
 
 .hero-photo {
-  position: absolute;
-  background-color: transparent;
-  inset: 0;
-  z-index: 0;
+  display: block;
   width: 100%;
   height: 100%;
-  padding: 28px;
-  object-fit: contain;
-  background: transparent;
-  border-radius: 28px;
+  object-fit: cover;
 }
 
 @media (max-width: 960px) {
-  .hero-inner {
+  .hero-grid {
     grid-template-columns: 1fr;
+    min-height: 0;
   }
 
   .hero-art {
-    height: 420px;
+    height: 320px;
     order: -1;
+  }
+
+  .hero-copy {
+    padding: 32px clamp(20px, 4vw, 48px) 48px;
   }
 }
 
 @media (max-width: 640px) {
-  .hero {
-    padding: 12px 0 12px;
-  }
-
-  .hero-inner {
-    gap: 12px;
-  }
-
   .hero-art {
-    height: clamp(120px, 24svh, 190px);
+    height: clamp(180px, 34svh, 260px);
   }
 
-  .hero-photo {
-    padding: 14px;
+  .hero-copy {
+    padding: 20px clamp(20px, 4vw, 48px) 32px;
   }
 
   .eyebrow {

@@ -4,29 +4,113 @@
       <img src="assets/logo.png" alt="Dada Rent Car" />
     </div>
     <div class="login-tabs">
-      <button type="button" [class.active]="mode === 'login'" (click)="setMode('login')">Connexion</button>
-      <button type="button" [class.active]="mode === 'signup'" (click)="setMode('signup')">Créer un compte</button>
+      <button type="button" [class.active]="mode() === 'login'" (click)="setMode('login')">Connexion</button>
+      <button type="button" [class.active]="mode() === 'signup'" (click)="setMode('signup')">Créer un compte</button>
     </div>
 
-    <form (ngSubmit)="submit()">
-      <div class="field">
-        <label for="email">Email</label>
-        <input id="email" type="email" name="email" placeholder="admin@dadarentcar.com" autocomplete="username" [(ngModel)]="email" />
-      </div>
-      <div class="field">
-        <label for="password">Mot de passe</label>
-        <input id="password" type="password" name="password" placeholder="••••••••" autocomplete="current-password" [(ngModel)]="password" />
-      </div>
+    @if (mode() === 'login' && deviceStatus() === 'checking') {
+      <p class="status-msg">Vérification de cet appareil...</p>
+    } @else if (mode() === 'login' && deviceStatus() === 'recognized') {
+      <p class="status-msg status-ok">Cet appareil est reconnu — ouverture de l'espace admin...</p>
+    } @else {
+      <form (ngSubmit)="submit()">
+        @if (step() === 'form') {
+          <div class="field">
+            <label for="phone">Téléphone</label>
+            <input
+              id="phone"
+              type="tel"
+              name="phone"
+              placeholder="+216 00 000 000"
+              autocomplete="tel"
+              [ngModel]="phone()"
+              (ngModelChange)="phone.set($event)"
+            />
+          </div>
+          @if (mode() === 'signup') {
+            <div class="field">
+              <label for="name">Nom complet</label>
+              <input
+                id="name"
+                type="text"
+                name="name"
+                placeholder="Votre nom"
+                autocomplete="name"
+                [ngModel]="name()"
+                (ngModelChange)="name.set($event)"
+              />
+            </div>
+            <div class="field">
+              <label for="email">Email</label>
+              <input
+                id="email"
+                type="email"
+                name="email"
+                placeholder="admin@dadarentcar.com"
+                autocomplete="email"
+                [ngModel]="email()"
+                (ngModelChange)="email.set($event)"
+              />
+            </div>
+          }
+        } @else {
+          <p class="otp-hint">
+            @if (mode() === 'login') {
+              Code envoyé à votre email enregistré.
+            } @else {
+              Code envoyé pour vérifier <strong>{{ phone() }}</strong>
+            }
+          </p>
+          <div class="field">
+            <label for="otp">Code à 6 chiffres</label>
+            <input
+              id="otp"
+              type="text"
+              inputmode="numeric"
+              maxlength="6"
+              autocomplete="one-time-code"
+              placeholder="000000"
+              class="otp-input"
+              name="otp"
+              [ngModel]="otpCode()"
+              (ngModelChange)="otpCode.set($event)"
+            />
+          </div>
+        }
 
-      @if (error) {
-        <p class="error">{{ error }}</p>
+        @if (error()) {
+          <p class="error">{{ error() }}</p>
+        }
+        @if (info() && !error()) {
+          <p class="info">{{ info() }}</p>
+        }
+
+        <button type="submit" class="btn btn-primary btn-lg btn-block" [disabled]="loading()">
+          @if (loading()) {
+            Patientez...
+          } @else if (step() === 'form') {
+            Envoyer le code
+          } @else {
+            Vérifier et continuer
+          }
+        </button>
+
+        @if (step() === 'otp') {
+          <div class="otp-actions">
+            <button type="button" class="link-btn" (click)="backToForm()">← Modifier</button>
+            <button type="button" class="link-btn" (click)="resendOtp()" [disabled]="loading()">Renvoyer le code</button>
+          </div>
+        }
+      </form>
+    }
+
+    <p class="hint">
+      @if (mode() === 'login') {
+        Appareil non reconnu : un code est envoyé à l'email associé à votre compte.
+      } @else {
+        Première inscription : le code est envoyé à l'administrateur pour approbation.
       }
-
-      <button type="submit" class="btn btn-primary btn-lg btn-block" [disabled]="loading">
-        {{ loading ? 'Patientez...' : (mode === 'login' ? 'Se connecter' : 'Créer le compte') }}
-      </button>
-    </form>
-
-    <p class="hint">Espace réservé à l'équipe Dada Rent Car.</p>
+      Une fois validé, cet appareil reste connecté automatiquement.
+    </p>
   </div>
 </div>

@@ -45,6 +45,7 @@ export class Dashboard {
   protected readonly loading: Signal<boolean>;
   protected readonly filtered: Signal<Attempt[]>;
   protected readonly counts: Signal<Record<string, number>>;
+  protected readonly confirmedRevenue: Signal<number>;
 
   constructor(
     private readonly attemptsService: AttemptsService,
@@ -73,6 +74,12 @@ export class Dashboard {
       }
       return map;
     });
+
+    this.confirmedRevenue = computed(() =>
+      this.activeAttempts()
+        .filter((a) => a.pricing?.source === 'recus')
+        .reduce((sum, a) => sum + (a.pricing?.total ?? 0), 0),
+    );
   }
 
   protected setFilter(filter: AttemptStatus | 'tous'): void {

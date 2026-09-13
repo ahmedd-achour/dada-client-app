@@ -1,8 +1,8 @@
 .chat-widget {
   position: fixed;
-  right: 1.5rem;
-  bottom: 1.5rem;
-  z-index: 1000;
+  right: 20px;
+  bottom: calc(150px + env(safe-area-inset-bottom));
+  z-index: 30;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -309,11 +309,6 @@
 }
 
 @media (max-width: 480px) {
-  .chat-widget {
-    right: 1rem;
-    bottom: 1rem;
-  }
-
   .chat-fab-label {
     display: none;
   }

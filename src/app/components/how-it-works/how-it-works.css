@@ -1,3 +1,37 @@
+.how-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.how-blob {
+  position: absolute;
+  top: -12%;
+  right: -10%;
+  width: 44vw;
+  height: 44vw;
+  max-width: 560px;
+  max-height: 560px;
+  background: linear-gradient(150deg, var(--primary-light), var(--bg-soft));
+  animation: blobMorph 9s ease-in-out infinite;
+  z-index: 0;
+  opacity: 0.8;
+}
+
+.how-section .wrap {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes blobMorph {
+  0%,
+  100% {
+    border-radius: 42% 58% 65% 35% / 45% 40% 60% 55%;
+  }
+  50% {
+    border-radius: 58% 42% 35% 65% / 55% 60% 40% 45%;
+  }
+}
+
 .steps-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
