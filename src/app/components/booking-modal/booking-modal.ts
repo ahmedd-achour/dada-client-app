@@ -18,6 +18,8 @@ export class BookingModal {
   protected readonly today = new Date().toISOString().slice(0, 10);
 
   protected selectedCar = '';
+  /** Set when the client reserved one exact car from the fleet — locks the vehicle field instead of the category picker. */
+  protected fixedVehicle: { id: string; label: string } | null = null;
   protected customerName = '';
   protected customerPhone = '';
   protected promoCode = '';
@@ -33,6 +35,7 @@ export class BookingModal {
     effect(() => {
       if (this.modal.isOpen()) {
         this.selectedCar = this.modal.presetCategory() ?? this.categories[0].name;
+        this.fixedVehicle = this.modal.presetVehicle();
         this.customerName = '';
         this.customerPhone = '';
         this.promoCode = '';
@@ -54,6 +57,11 @@ export class BookingModal {
     return this.categories.find((c) => c.name === this.selectedCar) ?? this.categories[0];
   }
 
+  /** Lets the client abandon the exact car they clicked and fall back to picking just a category. */
+  protected changeVehicle(): void {
+    this.fixedVehicle = null;
+  }
+
   protected get isValid(): boolean {
     const hasEnoughDigits = this.customerPhone.replace(/\D/g, '').length >= 8;
     return (
@@ -71,7 +79,8 @@ export class BookingModal {
       const [year, month, day] = value.split('-');
       return `${day}/${month}/${year}`;
     };
-    let message = `Bonjour, je m'appelle ${this.customerName.trim()} (${this.customerPhone.trim()}).\nJe souhaite réserver : ${this.selectedCar}\nDu ${formatDate(this.startDate)} au ${formatDate(this.endDate)}`;
+    const vehicleText = this.fixedVehicle ? `${this.fixedVehicle.label} (${this.selectedCar})` : this.selectedCar;
+    let message = `Bonjour, je m'appelle ${this.customerName.trim()} (${this.customerPhone.trim()}).\nJe souhaite réserver : ${vehicleText}\nDu ${formatDate(this.startDate)} au ${formatDate(this.endDate)}`;
     if (this.promoCode.trim()) {
       message += `\nCode promo : ${this.promoCode.trim()}`;
     }
@@ -92,6 +101,7 @@ export class BookingModal {
         customerName: this.customerName.trim(),
         customerPhone: this.customerPhone.trim(),
         category: this.selectedCar,
+        ...(this.fixedVehicle ? { vehicleLabel: this.fixedVehicle.label, vehicleId: this.fixedVehicle.id } : {}),
         startDate: this.startDate,
         endDate: this.endDate,
         promoCode: this.promoCode.trim(),

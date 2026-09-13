@@ -95,15 +95,27 @@ export class FleetService {
     await updateDoc(doc(db, FLEET_COLLECTION, id), { isPublic, updatedAt: Date.now() });
   }
 
-  /** One-time bootstrap: only writes if the collection is empty, so it's safe to call from
-   *  ngOnInit on every visit to the admin fleet page without ever clobbering real edits. */
-  async seedIfEmpty(): Promise<void> {
+  /**
+   * Bootstraps the catalog from `FLEET_MODELS`, then keeps it in sync as that source list grows:
+   * any model whose brand+model isn't already in Firestore gets added (matched, not replaced —
+   * existing docs are never touched, so real edits/visibility toggles are safe). Called from
+   * `FleetAdmin`'s constructor on every visit, so it's safe to call every time.
+   */
+  async seedMissingModels(): Promise<void> {
     const existing = await getDocs(query(collection(db, FLEET_COLLECTION)));
-    if (!existing.empty) return;
+    const existingKeys = new Set(
+      existing.docs.map((d) => {
+        const data = d.data() as FleetVehicleDoc;
+        return `${data.brand}|${data.model}`.toLowerCase().trim();
+      }),
+    );
+    const missing = FLEET_MODELS.filter((model) => !existingKeys.has(`${model.brand}|${model.model}`.toLowerCase().trim()));
+    if (missing.length === 0) return;
 
     const batch = writeBatch(db);
     const now = Date.now();
-    FLEET_MODELS.forEach((model, index) => {
+    let order = existing.size;
+    missing.forEach((model) => {
       const transmissions = Array.from(new Set(model.units.map((u) => u.transmission))).join(' / ');
       const ref = doc(collection(db, FLEET_COLLECTION));
       const input: FleetVehicleInput = {
@@ -120,7 +132,7 @@ export class FleetService {
         dailyFrom: model.dailyFrom,
         bookingCategory: model.bookingCategory,
         isPublic: true,
-        order: index,
+        order: order++,
       };
       batch.set(ref, { ...input, createdAt: now, updatedAt: now });
     });

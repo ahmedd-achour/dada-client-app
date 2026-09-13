@@ -51,7 +51,7 @@
       <a class="attempt-row" [routerLink]="['/admin', attempt.id]">
         <div class="attempt-main">
           <span class="attempt-name">{{ attempt.customerName }}</span>
-          <span class="attempt-sub">{{ attempt.customerPhone }} · {{ attempt.category }}</span>
+          <span class="attempt-sub">{{ attempt.customerPhone }} · {{ attempt.vehicleLabel || attempt.category }}</span>
         </div>
         <div class="attempt-dates">
           <span>{{ attempt.startDate }} → {{ attempt.endDate }}</span>

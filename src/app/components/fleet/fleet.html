@@ -77,7 +77,7 @@
                 <div class="fleet-sub">{{ vehicle.bodyType }} · {{ vehicle.year }}</div>
                 <div class="fleet-foot">
                   <div class="fleet-price"><span class="amount">dès {{ vehicle.dailyFrom }} DT</span> <span class="unit">/ jour</span></div>
-                  <button type="button" class="btn btn-primary btn-sm" (click)="reserve(vehicle.bookingCategory)">Réserver</button>
+                  <button type="button" class="btn btn-primary btn-sm" (click)="reserveVehicle(vehicle)">Réserver</button>
                 </div>
               </div>
             </div>
@@ -123,7 +123,7 @@
                 </div>
                 <div class="fleet-foot">
                   <div class="fleet-price"><span class="amount">dès {{ vehicle.dailyFrom }} DT</span> <span class="unit">/ jour</span></div>
-                  <button type="button" class="btn btn-primary btn-sm" (click)="reserve(vehicle.bookingCategory)">Réserver</button>
+                  <button type="button" class="btn btn-primary btn-sm" (click)="reserveVehicle(vehicle)">Réserver</button>
                 </div>
               </div>
             </div>

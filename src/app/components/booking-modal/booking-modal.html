@@ -13,7 +13,14 @@
 
       <div class="modal-field">
         <label>Véhicule</label>
-        <app-vehicle-picker [selected]="selectedCar" (selectedChange)="selectedCar = $event" />
+        @if (fixedVehicle) {
+          <div class="modal-fixed-vehicle">
+            <span class="modal-fixed-vehicle-name">{{ fixedVehicle.label }}</span>
+            <button type="button" class="modal-fixed-vehicle-change" (click)="changeVehicle()">Changer</button>
+          </div>
+        } @else {
+          <app-vehicle-picker [selected]="selectedCar" (selectedChange)="selectedCar = $event" />
+        }
         <span class="modal-hint">{{ selectedCategory.priceLabel }} / jour</span>
       </div>
 

@@ -1,9 +1,10 @@
 /**
- * Fleet models, ported from the previous (MERN) Dada Rent Car site's
- * `dadarentcar_fleet.json` inventory export — 16 models, expanded below into one
- * entry per physical unit (37 in the source export) for the "full fleet" showcase.
- * Used only for display — booking still goes through the existing broad-category
- * flow, via `bookingCategory` mapping each model to the closest FLEET_CATEGORIES entry.
+ * Fleet models. The first 16 were ported from the previous (MERN) Dada Rent Car site's
+ * `dadarentcar_fleet.json` inventory export; the rest were added to grow the public catalog
+ * past 50 vehicles. Booking can now target one exact model (via `FleetService.seedMissingModels`
+ * syncing new entries into Firestore, and the booking modal's `presetVehicle`) as well as just
+ * a `bookingCategory` (must match a FLEET_CATEGORIES name). Models added after the initial 16
+ * reuse a shared placeholder image per category instead of a per-model photo.
  */
 export interface FleetModel {
   id: string;
@@ -134,5 +135,224 @@ export const FLEET_MODELS: FleetModel[] = [
     id: 'suzuki-dzire', brand: 'Suzuki', model: 'Dzire', year: 2017, bodyType: 'Citadine', gamme: 'Standard', seats: 5, fuel: 'Essence',
     image: 'https://commons.wikimedia.org/wiki/Special:FilePath/2020_Suzuki_Dzire.jpg?width=800', dailyFrom: 90, bookingCategory: 'Petite voiture',
     units: [{ transmission: 'Manuelle', color: 'Gris' }],
+  },
+
+  // --- Petite voiture ---
+  {
+    id: 'renault-symbol', brand: 'Renault', model: 'Symbol', year: 2018, bodyType: 'Berline', gamme: 'Standard', seats: 5, fuel: 'Essence',
+    image: 'assets/categories/small.png', dailyFrom: 90, bookingCategory: 'Petite voiture',
+    units: [{ transmission: 'Manuelle', color: 'Gris' }, { transmission: 'Manuelle', color: 'Blanc' }],
+  },
+  {
+    id: 'renault-sandero', brand: 'Renault', model: 'Sandero', year: 2020, bodyType: 'Citadine', gamme: 'Standard', seats: 5, fuel: 'Essence',
+    image: 'assets/categories/small.png', dailyFrom: 85, bookingCategory: 'Petite voiture',
+    units: [{ transmission: 'Manuelle', color: 'Blanc' }, { transmission: 'Manuelle', color: 'Rouge' }],
+  },
+  {
+    id: 'peugeot-208', brand: 'Peugeot', model: '208', year: 2021, bodyType: 'Citadine', gamme: 'Standard', seats: 5, fuel: 'Essence',
+    image: 'assets/categories/small.png', dailyFrom: 95, bookingCategory: 'Petite voiture',
+    units: [{ transmission: 'Automatique', color: 'Blanc' }, { transmission: 'Manuelle', color: 'Gris' }],
+  },
+  {
+    id: 'volkswagen-polo', brand: 'Volkswagen', model: 'Polo', year: 2019, bodyType: 'Citadine', gamme: 'Standard', seats: 5, fuel: 'Essence',
+    image: 'assets/categories/small.png', dailyFrom: 100, bookingCategory: 'Petite voiture',
+    units: [{ transmission: 'Manuelle', color: 'Blanc' }],
+  },
+  {
+    id: 'seat-ibiza', brand: 'Seat', model: 'Ibiza', year: 2018, bodyType: 'Citadine', gamme: 'Standard', seats: 5, fuel: 'Essence',
+    image: 'assets/categories/small.png', dailyFrom: 90, bookingCategory: 'Petite voiture',
+    units: [{ transmission: 'Manuelle', color: 'Rouge' }],
+  },
+  {
+    id: 'citroen-c3', brand: 'Citroën', model: 'C3', year: 2020, bodyType: 'Citadine', gamme: 'Standard', seats: 5, fuel: 'Essence',
+    image: 'assets/categories/small.png', dailyFrom: 95, bookingCategory: 'Petite voiture',
+    units: [{ transmission: 'Manuelle', color: 'Blanc' }, { transmission: 'Manuelle', color: 'Gris' }],
+  },
+  {
+    id: 'skoda-fabia', brand: 'Skoda', model: 'Fabia', year: 2018, bodyType: 'Citadine', gamme: 'Standard', seats: 5, fuel: 'Essence',
+    image: 'assets/categories/small.png', dailyFrom: 90, bookingCategory: 'Petite voiture',
+    units: [{ transmission: 'Manuelle', color: 'Gris' }],
+  },
+  {
+    id: 'nissan-micra', brand: 'Nissan', model: 'Micra', year: 2019, bodyType: 'Citadine', gamme: 'Standard', seats: 5, fuel: 'Essence',
+    image: 'assets/categories/small.png', dailyFrom: 85, bookingCategory: 'Petite voiture',
+    units: [{ transmission: 'Automatique', color: 'Blanc' }, { transmission: 'Manuelle', color: 'Noir' }],
+  },
+
+  // --- Voiture standard ---
+  {
+    id: 'peugeot-301', brand: 'Peugeot', model: '301', year: 2019, bodyType: 'Berline', gamme: 'Standard', seats: 5, fuel: 'Essence',
+    image: 'assets/categories/medium.png', dailyFrom: 100, bookingCategory: 'Voiture standard',
+    units: [{ transmission: 'Manuelle', color: 'Blanc' }, { transmission: 'Manuelle', color: 'Gris' }],
+  },
+  {
+    id: 'toyota-yaris', brand: 'Toyota', model: 'Yaris', year: 2020, bodyType: 'Citadine', gamme: 'Standard', seats: 5, fuel: 'Essence',
+    image: 'assets/categories/medium.png', dailyFrom: 110, bookingCategory: 'Voiture standard',
+    units: [{ transmission: 'Automatique', color: 'Gris' }],
+  },
+  {
+    id: 'kia-rio', brand: 'Kia', model: 'Rio', year: 2019, bodyType: 'Berline', gamme: 'Standard', seats: 5, fuel: 'Essence',
+    image: 'assets/categories/medium.png', dailyFrom: 95, bookingCategory: 'Voiture standard',
+    units: [{ transmission: 'Manuelle', color: 'Blanc' }],
+  },
+  {
+    id: 'hyundai-accent', brand: 'Hyundai', model: 'Accent', year: 2018, bodyType: 'Berline', gamme: 'Standard', seats: 5, fuel: 'Essence',
+    image: 'assets/categories/medium.png', dailyFrom: 100, bookingCategory: 'Voiture standard',
+    units: [{ transmission: 'Manuelle', color: 'Gris' }, { transmission: 'Manuelle', color: 'Blanc' }],
+  },
+  {
+    id: 'citroen-c-elysee', brand: 'Citroën', model: 'C-Elysée', year: 2019, bodyType: 'Berline', gamme: 'Standard', seats: 5, fuel: 'Essence',
+    image: 'assets/categories/medium.png', dailyFrom: 95, bookingCategory: 'Voiture standard',
+    units: [{ transmission: 'Manuelle', color: 'Blanc' }],
+  },
+  {
+    id: 'volkswagen-golf', brand: 'Volkswagen', model: 'Golf', year: 2018, bodyType: 'Berline', gamme: 'Standard', seats: 5, fuel: 'Essence',
+    image: 'assets/categories/medium.png', dailyFrom: 120, bookingCategory: 'Voiture standard',
+    units: [{ transmission: 'Automatique', color: 'Noir' }],
+  },
+  {
+    id: 'renault-megane', brand: 'Renault', model: 'Mégane', year: 2019, bodyType: 'Berline', gamme: 'Standard', seats: 5, fuel: 'Essence',
+    image: 'assets/categories/medium.png', dailyFrom: 115, bookingCategory: 'Voiture standard',
+    units: [{ transmission: 'Manuelle', color: 'Gris' }],
+  },
+  {
+    id: 'skoda-octavia', brand: 'Skoda', model: 'Octavia', year: 2019, bodyType: 'Berline', gamme: 'Standard', seats: 5, fuel: 'Diesel',
+    image: 'assets/categories/medium.png', dailyFrom: 120, bookingCategory: 'Voiture standard',
+    units: [{ transmission: 'Automatique', color: 'Blanc' }],
+  },
+
+  // --- SUV ---
+  {
+    id: 'renault-duster', brand: 'Renault', model: 'Duster', year: 2020, bodyType: 'SUV', gamme: 'Standard', seats: 5, fuel: 'Diesel',
+    image: 'assets/categories/suv.png', dailyFrom: 120, bookingCategory: 'SUV',
+    units: [{ transmission: 'Manuelle', color: 'Gris' }, { transmission: 'Manuelle', color: 'Blanc' }],
+  },
+  {
+    id: 'peugeot-2008', brand: 'Peugeot', model: '2008', year: 2020, bodyType: 'SUV', gamme: 'Standard', seats: 5, fuel: 'Essence',
+    image: 'assets/categories/suv.png', dailyFrom: 115, bookingCategory: 'SUV',
+    units: [{ transmission: 'Automatique', color: 'Blanc' }],
+  },
+  {
+    id: 'hyundai-tucson', brand: 'Hyundai', model: 'Tucson', year: 2019, bodyType: 'SUV', gamme: 'Standard', seats: 5, fuel: 'Diesel',
+    image: 'assets/categories/suv.png', dailyFrom: 140, bookingCategory: 'SUV',
+    units: [{ transmission: 'Automatique', color: 'Gris' }],
+  },
+  {
+    id: 'kia-sportage', brand: 'Kia', model: 'Sportage', year: 2019, bodyType: 'SUV', gamme: 'Standard', seats: 5, fuel: 'Diesel',
+    image: 'assets/categories/suv.png', dailyFrom: 140, bookingCategory: 'SUV',
+    units: [{ transmission: 'Automatique', color: 'Blanc' }],
+  },
+  {
+    id: 'nissan-qashqai', brand: 'Nissan', model: 'Qashqai', year: 2019, bodyType: 'SUV', gamme: 'Standard', seats: 5, fuel: 'Essence',
+    image: 'assets/categories/suv.png', dailyFrom: 135, bookingCategory: 'SUV',
+    units: [{ transmission: 'Automatique', color: 'Gris' }],
+  },
+  {
+    id: 'jeep-renegade', brand: 'Jeep', model: 'Renegade', year: 2020, bodyType: 'SUV', gamme: 'Standard', seats: 5, fuel: 'Essence',
+    image: 'assets/categories/suv.png', dailyFrom: 130, bookingCategory: 'SUV',
+    units: [{ transmission: 'Automatique', color: 'Rouge' }],
+  },
+  {
+    id: 'jeep-compass', brand: 'Jeep', model: 'Compass', year: 2019, bodyType: 'SUV', gamme: 'Standard', seats: 5, fuel: 'Diesel',
+    image: 'assets/categories/suv.png', dailyFrom: 145, bookingCategory: 'SUV',
+    units: [{ transmission: 'Automatique', color: 'Gris' }],
+  },
+  {
+    id: 'toyota-rav4', brand: 'Toyota', model: 'RAV4', year: 2020, bodyType: 'SUV', gamme: 'Standard', seats: 5, fuel: 'Essence',
+    image: 'assets/categories/suv.png', dailyFrom: 150, bookingCategory: 'SUV',
+    units: [{ transmission: 'Automatique', color: 'Blanc' }],
+  },
+  {
+    id: 'volkswagen-tiguan', brand: 'Volkswagen', model: 'Tiguan', year: 2019, bodyType: 'SUV', gamme: 'Standard', seats: 5, fuel: 'Diesel',
+    image: 'assets/categories/suv.png', dailyFrom: 145, bookingCategory: 'SUV',
+    units: [{ transmission: 'Automatique', color: 'Gris' }],
+  },
+  {
+    id: 'mahindra-xuv500', brand: 'Mahindra', model: 'XUV 500', year: 2018, bodyType: 'SUV', gamme: 'Standard', seats: 7, fuel: 'Diesel',
+    image: 'assets/categories/suv.png', dailyFrom: 130, bookingCategory: 'SUV',
+    units: [{ transmission: 'Manuelle', color: 'Blanc' }],
+  },
+
+  // --- 7 Places ---
+  {
+    id: 'peugeot-5008', brand: 'Peugeot', model: '5008', year: 2020, bodyType: 'SUV 7 places', gamme: '7 Places', seats: 7, fuel: 'Diesel',
+    image: 'assets/nissan-patrol.png', dailyFrom: 230, bookingCategory: '7 Places',
+    units: [{ transmission: 'Automatique', color: 'Blanc' }],
+  },
+  {
+    id: 'nissan-patrol', brand: 'Nissan', model: 'Patrol', year: 2019, bodyType: 'SUV 7 places', gamme: '7 Places', seats: 7, fuel: 'Essence',
+    image: 'assets/nissan-patrol.png', dailyFrom: 260, bookingCategory: '7 Places',
+    units: [{ transmission: 'Automatique', color: 'Noir' }],
+  },
+  {
+    id: 'toyota-land-cruiser-prado', brand: 'Toyota', model: 'Land Cruiser Prado', year: 2019, bodyType: 'SUV 7 places', gamme: '7 Places', seats: 7, fuel: 'Diesel',
+    image: 'assets/nissan-patrol.png', dailyFrom: 250, bookingCategory: '7 Places',
+    units: [{ transmission: 'Automatique', color: 'Gris' }],
+  },
+  {
+    id: 'hyundai-santa-fe', brand: 'Hyundai', model: 'Santa Fe', year: 2019, bodyType: 'SUV 7 places', gamme: '7 Places', seats: 7, fuel: 'Diesel',
+    image: 'assets/nissan-patrol.png', dailyFrom: 220, bookingCategory: '7 Places',
+    units: [{ transmission: 'Automatique', color: 'Blanc' }],
+  },
+
+  // --- Pickup 4x4 ---
+  {
+    id: 'toyota-hilux', brand: 'Toyota', model: 'Hilux', year: 2020, bodyType: 'Pickup 4x4', gamme: 'Pickup', seats: 5, fuel: 'Diesel',
+    image: 'assets/categories/4x4.png', dailyFrom: 230, bookingCategory: 'Pickup 4x4',
+    units: [{ transmission: 'Manuelle', color: 'Blanc' }, { transmission: 'Manuelle', color: 'Gris' }],
+  },
+  {
+    id: 'isuzu-d-max', brand: 'Isuzu', model: 'D-Max', year: 2019, bodyType: 'Pickup 4x4', gamme: 'Pickup', seats: 5, fuel: 'Diesel',
+    image: 'assets/categories/4x4.png', dailyFrom: 210, bookingCategory: 'Pickup 4x4',
+    units: [{ transmission: 'Manuelle', color: 'Blanc' }],
+  },
+  {
+    id: 'ford-ranger', brand: 'Ford', model: 'Ranger', year: 2019, bodyType: 'Pickup 4x4', gamme: 'Pickup', seats: 5, fuel: 'Diesel',
+    image: 'assets/categories/4x4.png', dailyFrom: 220, bookingCategory: 'Pickup 4x4',
+    units: [{ transmission: 'Manuelle', color: 'Gris' }],
+  },
+  {
+    id: 'mitsubishi-l200', brand: 'Mitsubishi', model: 'L200', year: 2018, bodyType: 'Pickup 4x4', gamme: 'Pickup', seats: 5, fuel: 'Diesel',
+    image: 'assets/categories/4x4.png', dailyFrom: 200, bookingCategory: 'Pickup 4x4',
+    units: [{ transmission: 'Manuelle', color: 'Blanc' }],
+  },
+
+  // --- Luxe ---
+  {
+    id: 'mercedes-classe-c', brand: 'Mercedes', model: 'Classe C', year: 2019, bodyType: 'Berline', gamme: 'Luxe', seats: 5, fuel: 'Essence',
+    image: 'assets/categories/premium.png', dailyFrom: 350, bookingCategory: 'Luxe',
+    units: [{ transmission: 'Automatique', color: 'Noir' }],
+  },
+  {
+    id: 'bmw-serie-5', brand: 'BMW', model: 'Série 5', year: 2019, bodyType: 'Berline', gamme: 'Luxe', seats: 5, fuel: 'Diesel',
+    image: 'assets/categories/premium.png', dailyFrom: 420, bookingCategory: 'Luxe',
+    units: [{ transmission: 'Automatique', color: 'Noir' }],
+  },
+  {
+    id: 'audi-a3', brand: 'Audi', model: 'A3', year: 2019, bodyType: 'Berline', gamme: 'Luxe', seats: 5, fuel: 'Essence',
+    image: 'assets/categories/premium.png', dailyFrom: 330, bookingCategory: 'Luxe',
+    units: [{ transmission: 'Automatique', color: 'Blanc' }],
+  },
+  {
+    id: 'mercedes-glc', brand: 'Mercedes', model: 'GLC', year: 2019, bodyType: 'SUV', gamme: 'Luxe', seats: 5, fuel: 'Diesel',
+    image: 'assets/categories/premium.png', dailyFrom: 450, bookingCategory: 'Luxe',
+    units: [{ transmission: 'Automatique', color: 'Noir' }],
+  },
+  {
+    id: 'bmw-x3', brand: 'BMW', model: 'X3', year: 2019, bodyType: 'SUV', gamme: 'Luxe', seats: 5, fuel: 'Diesel',
+    image: 'assets/categories/premium.png', dailyFrom: 440, bookingCategory: 'Luxe',
+    units: [{ transmission: 'Automatique', color: 'Blanc' }],
+  },
+
+  // --- 2ème Parc ---
+  {
+    id: 'renault-clio-3', brand: 'Renault', model: 'Clio 3', year: 2010, bodyType: 'Citadine', gamme: 'Standard', seats: 5, fuel: 'Essence',
+    image: 'assets/categories/second-parc.png', dailyFrom: 60, bookingCategory: '2ème Parc',
+    units: [{ transmission: 'Manuelle', color: 'Gris' }, { transmission: 'Manuelle', color: 'Blanc' }],
+  },
+  {
+    id: 'peugeot-206', brand: 'Peugeot', model: '206', year: 2008, bodyType: 'Citadine', gamme: 'Standard', seats: 5, fuel: 'Essence',
+    image: 'assets/categories/second-parc.png', dailyFrom: 55, bookingCategory: '2ème Parc',
+    units: [{ transmission: 'Manuelle', color: 'Bleu' }],
   },
 ];

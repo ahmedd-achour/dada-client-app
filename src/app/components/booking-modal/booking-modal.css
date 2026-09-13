@@ -125,6 +125,40 @@
   border-color: var(--primary);
 }
 
+.modal-fixed-vehicle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  height: 50px;
+  box-sizing: border-box;
+  border-radius: 14px;
+  border: 1.5px solid var(--primary);
+  background: var(--primary-light);
+  padding: 0 16px;
+}
+
+.modal-fixed-vehicle-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--primary-dark);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.modal-fixed-vehicle-change {
+  flex: none;
+  border: none;
+  background: none;
+  padding: 0;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--primary-dark);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .modal-hint {
   font-size: 0.8rem;
   font-weight: 600;

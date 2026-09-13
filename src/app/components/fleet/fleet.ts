@@ -45,4 +45,9 @@ export class Fleet {
   protected reserve(bookingCategory: string): void {
     this.bookingModal.open(bookingCategory);
   }
+
+  /** Reserving one exact car from the fleet (search results / carousel) — the request must keep that exact vehicle, not just its category. */
+  protected reserveVehicle(vehicle: FleetVehicleDoc): void {
+    this.bookingModal.open(vehicle.bookingCategory, { id: vehicle.id, label: `${vehicle.brand} ${vehicle.model}` });
+  }
 }

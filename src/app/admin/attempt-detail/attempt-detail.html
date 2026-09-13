@@ -5,6 +5,9 @@
     <div>
       <h1>{{ current.customerName }}</h1>
       <p class="phone">{{ current.customerPhone }} · Créée le {{ current.createdAt | date: 'dd/MM/yyyy HH:mm' }}</p>
+      @if (current.vehicleLabel) {
+        <p class="phone" style="font-weight: 700; color: var(--primary-dark);">Véhicule précis demandé : {{ current.vehicleLabel }} ({{ current.category }})</p>
+      }
     </div>
     <div class="head-right">
       @if (current.pricing.source === 'recus') {
@@ -105,8 +108,15 @@
       <h2>Échanger le véhicule</h2>
       <div class="current-vehicle-info" style="margin-bottom: 1.5rem; padding: 1rem; background: var(--bg-soft); border-radius: var(--radius-md); border-left: 4px solid var(--primary-color);">
         <p style="margin: 0; font-size: 0.9em; color: var(--text-muted);">Véhicule actuel :</p>
-        <p style="margin: 0.25rem 0 0 0; font-weight: 600; font-size: 1.1em;">{{ current.category }}</p>
+        <p style="margin: 0.25rem 0 0 0; font-weight: 600; font-size: 1.1em;">
+          {{ current.vehicleLabel ? current.vehicleLabel + ' (' + current.category + ')' : current.category }}
+        </p>
       </div>
+      @if (current.vehicleLabel) {
+        <p style="margin: 0 0 1rem 0; font-size: 0.85em; color: var(--text-muted);">
+          Choisir une catégorie ci-dessous remplacera ce véhicule précis par une catégorie générale.
+        </p>
+      }
       <app-vehicle-picker [selected]="editCategory()" (selectedChange)="editCategory.set($event)" />
       <div class="panel-actions">
         <button type="button" class="btn btn-primary btn-lg" [disabled]="savingVehicle() || editCategory() === current.category" (click)="saveVehicle()">

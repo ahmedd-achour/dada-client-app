@@ -21,6 +21,7 @@ function matchesSearch(attempt: Attempt, term: string): boolean {
   if (normalize(attempt.customerName).includes(needle)) return true;
   if (normalize(attempt.customerPhone).includes(needle)) return true;
   if (normalize(attempt.category).includes(needle)) return true;
+  if (attempt.vehicleLabel && normalize(attempt.vehicleLabel).includes(needle)) return true;
 
   const plates = [...attempt.departureVideos, ...attempt.returnVideos]
     .map((a) => a.plateInfo?.plateNumber ?? '')

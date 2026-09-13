@@ -88,7 +88,7 @@ export class EmailService {
         <table style="border-collapse: collapse; margin-top: 16px;">
           <tr><td style="padding: 4px 12px 4px 0; color: #6b5a4a;">Client</td><td><strong>${attempt.customerName}</strong></td></tr>
           <tr><td style="padding: 4px 12px 4px 0; color: #6b5a4a;">Téléphone</td><td>${attempt.customerPhone}</td></tr>
-          <tr><td style="padding: 4px 12px 4px 0; color: #6b5a4a;">Véhicule</td><td>${attempt.category}</td></tr>
+          <tr><td style="padding: 4px 12px 4px 0; color: #6b5a4a;">Véhicule</td><td>${attempt.vehicleLabel ? `<strong>${attempt.vehicleLabel}</strong> (${attempt.category})` : attempt.category}</td></tr>
           <tr><td style="padding: 4px 12px 4px 0; color: #6b5a4a;">Dates</td><td>${attempt.startDate} → ${attempt.endDate}</td></tr>
           <tr><td style="padding: 4px 12px 4px 0; color: #6b5a4a;">Total estimé</td><td>${attempt.pricing?.total ?? '-'} DT</td></tr>
           <tr><td style="padding: 4px 12px 4px 0; color: #6b5a4a;">Statut</td><td>${attempt.status}</td></tr>

@@ -59,6 +59,8 @@ export interface NewAttemptInput {
   customerName: string;
   customerPhone: string;
   category: string;
+  vehicleLabel?: string;
+  vehicleId?: string;
   startDate: string;
   endDate: string;
   promoCode?: string;
@@ -102,6 +104,8 @@ export class AttemptsService {
       customerName: input.customerName,
       customerPhone: input.customerPhone,
       category: input.category,
+      ...(input.vehicleLabel ? { vehicleLabel: input.vehicleLabel } : {}),
+      ...(input.vehicleId ? { vehicleId: input.vehicleId } : {}),
       startDate: input.startDate,
       endDate: input.endDate,
       promoCode: input.promoCode ?? '',
@@ -195,7 +199,7 @@ export class AttemptsService {
 
   async updateVehicle(id: string, category: string, startDate: string, endDate: string): Promise<void> {
     const existing = await this.fetchAttempt(id);
-    const updates: Partial<Attempt> = { category, updatedAt: Date.now() };
+    const updates: Partial<Attempt> = { category, vehicleLabel: deleteField(), vehicleId: deleteField(), updatedAt: Date.now() } as unknown as Partial<Attempt>;
     if (existing?.pricing?.source === 'estimation') {
       updates.pricing = calculatePricing(category, startDate, endDate);
     }

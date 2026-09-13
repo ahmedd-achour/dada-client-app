@@ -113,6 +113,10 @@ export interface Attempt {
   customerName: string;
   customerPhone: string;
   category: string;
+  /** Set when the client picked one exact car from the fleet instead of just a category — e.g. "Peugeot 208 (2021)". */
+  vehicleLabel?: string;
+  /** Firestore id of that exact `fleets` document, so the admin can jump back to it. Cleared if the category is later changed. */
+  vehicleId?: string;
   startDate: string;
   endDate: string;
   promoCode: string;

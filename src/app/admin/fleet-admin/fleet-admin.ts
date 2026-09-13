@@ -17,7 +17,7 @@ export class FleetAdmin {
     private readonly fleetService: FleetService,
     private readonly alerts: AlertService,
   ) {
-    void this.fleetService.seedIfEmpty();
+    void this.fleetService.seedMissingModels();
     this.vehicles = toSignal(this.fleetService.watchFleet(), { initialValue: null });
   }
 
