@@ -1,9 +1,9 @@
 <section class="section-pad fleet" id="fleet">
   <div class="wrap">
-    
+
     <div class="fleet-subhead fleet-subhead-search">
-      <h3>Toute la flotte, véhicule par véhicule</h3>
-      <p>Recherchez un modèle précis, ou laissez défiler pour découvrir toute la gamme.</p>
+      <h3>{{ 'Toute la flotte, véhicule par véhicule' | t }}</h3>
+      <p>{{ 'Recherchez un modèle précis, ou laissez défiler pour découvrir toute la gamme.' | t }}</p>
     </div>
 
     <div class="fleet-search">
@@ -12,7 +12,7 @@
       </svg>
       <input
         type="search"
-        placeholder="Rechercher un véhicule (ex : Clio, BMW, SUV...)"
+        [attr.placeholder]="'Rechercher un véhicule (ex : Clio, BMW, SUV...)' | t"
         [ngModel]="searchTerm()"
         (ngModelChange)="searchTerm.set($event)"
       />
@@ -27,22 +27,22 @@
                 <img [src]="vehicle.image" [alt]="vehicle.brand + ' ' + vehicle.model" loading="lazy" />
                 <span class="fleet-badge">{{ vehicle.gamme }}</span>
                 @if (vehicle.unitCount > 1) {
-                  <span class="fleet-units">{{ vehicle.unitCount }} disponibles</span>
+                  <span class="fleet-units">{{ vehicle.unitCount }} {{ 'disponibles' | t }}</span>
                 }
               </div>
               <div class="fleet-body">
                 <div class="fleet-name">{{ vehicle.brand }} {{ vehicle.model }}</div>
                 <div class="fleet-sub">{{ vehicle.bodyType }} · {{ vehicle.year }}</div>
                 <div class="fleet-foot">
-                  <div class="fleet-price"><span class="amount">dès {{ vehicle.dailyFrom }} DT</span> <span class="unit">/ jour</span></div>
-                  <button type="button" class="btn btn-primary btn-sm" (click)="reserveVehicle(vehicle)">Réserver</button>
+                  <div class="fleet-price"><span class="amount">{{ 'dès' | t }} {{ vehicle.dailyFrom }} DT</span> <span class="unit">{{ '/ jour' | t }}</span></div>
+                  <button type="button" class="btn btn-primary btn-sm" (click)="reserveVehicle(vehicle)">{{ 'Réserver' | t }}</button>
                 </div>
               </div>
             </div>
           }
         </div>
       } @else {
-        <p class="fleet-no-results">Aucun véhicule ne correspond à « {{ searchTerm() }} ».</p>
+        <p class="fleet-no-results">{{ 'Aucun véhicule ne correspond à' | t }} « {{ searchTerm() }} ».</p>
       }
     } @else {
       <div class="carousel">
@@ -62,7 +62,7 @@
                       <circle cx="12" cy="8" r="3.2" />
                       <path d="M5 20c0-4 3.1-6.5 7-6.5s7 2.5 7 6.5" />
                     </svg>
-                    {{ vehicle.seats }} places
+                    {{ vehicle.seats }} {{ 'places' | t }}
                   </span>
                   <span>
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -80,8 +80,8 @@
                   </span>
                 </div>
                 <div class="fleet-foot">
-                  <div class="fleet-price"><span class="amount">dès {{ vehicle.dailyFrom }} DT</span> <span class="unit">/ jour</span></div>
-                  <button type="button" class="btn btn-primary btn-sm" (click)="reserveVehicle(vehicle)">Réserver</button>
+                  <div class="fleet-price"><span class="amount">{{ 'dès' | t }} {{ vehicle.dailyFrom }} DT</span> <span class="unit">{{ '/ jour' | t }}</span></div>
+                  <button type="button" class="btn btn-primary btn-sm" (click)="reserveVehicle(vehicle)">{{ 'Réserver' | t }}</button>
                 </div>
               </div>
             </div>
@@ -89,40 +89,40 @@
         </div>
       </div>
     }
-    
+
 
     <div class="fleet-subhead">
-      <h3>Choisissez votre catégorie</h3>
-      <p>De la citadine économique au véhicule de luxe, toute la flotte assurée.</p>
+      <h3>{{ 'Choisissez votre catégorie' | t }}</h3>
+      <p>{{ 'De la citadine économique au véhicule de luxe, toute la flotte assurée.' | t }}</p>
     </div>
     <div class="fleet-grid">
       @for (category of categories; track category.name) {
         <div class="fleet-cat-card">
           <div class="fleet-cat-media">
             <img [src]="category.image" [alt]="category.name" loading="lazy" />
-            <span class="fleet-badge">{{ category.badge }}</span>
+            <span class="fleet-badge">{{ category.badge | t }}</span>
           </div>
           <div class="fleet-cat-body">
-            <div class="fleet-name">{{ category.name }}</div>
+            <div class="fleet-name">{{ category.name | t }}</div>
             <div class="fleet-specs">
               <span>
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="12" cy="8" r="3.2" />
                   <path d="M5 20c0-4 3.1-6.5 7-6.5s7 2.5 7 6.5" />
                 </svg>
-                {{ category.seats }} places
+                {{ category.seats }} {{ 'places' | t }}
               </span>
               <span>
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="12" cy="12" r="8" />
                   <path d="M12 12l4-2.4" />
                 </svg>
-                {{ category.transmission }}
+                {{ category.transmission | t }}
               </span>
             </div>
             <div class="fleet-foot">
-              <div class="fleet-price"><span class="amount">{{ category.priceLabel }}</span> <span class="unit">/ jour</span></div>
-              <button type="button" class="btn btn-primary btn-sm" (click)="reserve(category.name)">Réserver</button>
+              <div class="fleet-price"><span class="amount">{{ category.priceLabel | t }}</span> <span class="unit">{{ '/ jour' | t }}</span></div>
+              <button type="button" class="btn btn-primary btn-sm" (click)="reserve(category.name)">{{ 'Réserver' | t }}</button>
             </div>
           </div>
         </div>

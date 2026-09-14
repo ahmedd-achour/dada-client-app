@@ -137,6 +137,50 @@
   color: var(--primary-dark);
 }
 
+.sidebar-lang {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.sidebar-lang-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-muted);
+  margin-bottom: 10px;
+}
+
+.sidebar-lang-options {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sidebar-lang-btn {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1.5px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.sidebar-lang-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary-dark);
+}
+
+.sidebar-lang-btn.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
 .sidebar-links {
   display: flex;
   flex-direction: column;

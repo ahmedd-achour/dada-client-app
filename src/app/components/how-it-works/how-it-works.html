@@ -2,8 +2,8 @@
   <div class="how-blob"></div>
   <div class="wrap">
     <div class="section-head">
-      <h2>Comment ça marche</h2>
-      <p>Trois étapes vous séparent de la route.</p>
+      <h2>{{ 'Comment ça marche' | t }}</h2>
+      <p>{{ 'Trois étapes vous séparent de la route.' | t }}</p>
     </div>
     <div class="steps-grid">
       @for (step of steps; track step.number) {
@@ -33,8 +33,8 @@
               }
             }
           </div>
-          <h3>{{ step.title }}</h3>
-          <p>{{ step.description }}</p>
+          <h3>{{ step.title | t }}</h3>
+          <p>{{ step.description | t }}</p>
         </div>
       }
     </div>

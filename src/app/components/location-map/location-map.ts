@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { BUSINESS_INFO } from '../../shared/business-info';
+import { TranslatePipe } from '../../shared/i18n/translate.pipe';
 
 @Component({
   selector: 'app-location-map',
+  imports: [TranslatePipe],
   templateUrl: './location-map.html',
   styleUrl: './location-map.css',
 })

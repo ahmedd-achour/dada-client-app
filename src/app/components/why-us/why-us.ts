@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { BUSINESS_INFO } from '../../shared/business-info';
+import { TranslatePipe } from '../../shared/i18n/translate.pipe';
 
 interface Benefit {
   title: string;
@@ -9,6 +10,7 @@ interface Benefit {
 
 @Component({
   selector: 'app-why-us',
+  imports: [TranslatePipe],
   templateUrl: './why-us.html',
   styleUrl: './why-us.css',
 })

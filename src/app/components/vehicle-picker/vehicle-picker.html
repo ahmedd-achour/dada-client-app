@@ -2,9 +2,9 @@
   <button type="button" class="vehicle-preview" aria-haspopup="listbox" [attr.aria-expanded]="open" (click)="toggle()">
     <img [src]="current.image" [alt]="current.name" />
     <div class="vehicle-preview-info">
-      <span class="vehicle-preview-badge">{{ current.badge }}</span>
-      <span class="vehicle-preview-name">{{ current.name }}</span>
-      <span class="vehicle-preview-specs">{{ current.seats }} places · {{ current.transmission }}</span>
+      <span class="vehicle-preview-badge">{{ current.badge | t }}</span>
+      <span class="vehicle-preview-name">{{ current.name | t }}</span>
+      <span class="vehicle-preview-specs">{{ current.seats }} {{ 'places' | t }} · {{ current.transmission | t }}</span>
     </div>
     <svg class="vehicle-preview-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="m8 9 4-4 4 4M8 15l4 4 4-4" />
@@ -24,8 +24,8 @@
         >
           <img [src]="category.image" [alt]="category.name" />
           <span class="vehicle-option-info">
-            <span class="vehicle-option-name">{{ category.name }}</span>
-            <span class="vehicle-option-price">{{ category.priceLabel }} / jour</span>
+            <span class="vehicle-option-name">{{ category.name | t }}</span>
+            <span class="vehicle-option-price">{{ category.priceLabel | t }} {{ '/ jour' | t }}</span>
           </span>
           @if (category.name === selected) {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">

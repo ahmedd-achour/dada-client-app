@@ -1,44 +1,44 @@
 @if (modal.isOpen()) {
   <div class="modal-overlay" (click)="close()">
     <div class="modal-card" (click)="$event.stopPropagation()">
-      <button type="button" class="modal-close" (click)="close()" aria-label="Fermer">
+      <button type="button" class="modal-close" (click)="close()" [attr.aria-label]="'Fermer' | t">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M18 6 6 18M6 6l12 12" />
         </svg>
       </button>
 
-      <span class="modal-eyebrow">Réservation rapide</span>
-      <h2>Réservez votre voiture</h2>
-      <p class="modal-sub">Choisissez votre véhicule et vos dates, on confirme le reste avec vous sur WhatsApp.</p>
+      <span class="modal-eyebrow">{{ 'Réservation rapide' | t }}</span>
+      <h2>{{ 'Réservez votre voiture' | t }}</h2>
+      <p class="modal-sub">{{ 'Choisissez votre véhicule et vos dates, on confirme le reste avec vous sur WhatsApp.' | t }}</p>
 
       <div class="modal-field">
-        <label>Véhicule</label>
+        <label>{{ 'Véhicule' | t }}</label>
         @if (fixedVehicle) {
           <div class="modal-fixed-vehicle">
             <span class="modal-fixed-vehicle-name">{{ fixedVehicle.label }}</span>
-            <button type="button" class="modal-fixed-vehicle-change" (click)="changeVehicle()">Changer</button>
+            <button type="button" class="modal-fixed-vehicle-change" (click)="changeVehicle()">{{ 'Changer' | t }}</button>
           </div>
         } @else {
           <app-vehicle-picker [selected]="selectedCar" (selectedChange)="selectedCar = $event" />
         }
-        <span class="modal-hint">{{ selectedCategory.priceLabel }} / jour</span>
+        <span class="modal-hint">{{ selectedCategory.priceLabel | t }} {{ '/ jour' | t }}</span>
       </div>
 
       <div class="modal-row">
         <div class="modal-field">
-          <label for="booking-name">Nom complet *</label>
+          <label for="booking-name">{{ 'Nom complet *' | t }}</label>
           <input
             id="booking-name"
             name="booking-name"
             type="text"
-            placeholder="Votre nom"
+            [attr.placeholder]="'Votre nom' | t"
             autocomplete="name"
             required
             [(ngModel)]="customerName"
           />
         </div>
         <div class="modal-field">
-          <label for="booking-phone">Téléphone *</label>
+          <label for="booking-phone">{{ 'Téléphone *' | t }}</label>
           <input
             id="booking-phone"
             name="booking-phone"
@@ -53,17 +53,17 @@
 
       <div class="modal-row">
         <div class="modal-field">
-          <label for="booking-start">Date de départ</label>
+          <label for="booking-start">{{ 'Date de départ' | t }}</label>
           <input id="booking-start" name="booking-start" type="date" [min]="today" [(ngModel)]="startDate" />
         </div>
         <div class="modal-field">
-          <label for="booking-end">Date de retour</label>
+          <label for="booking-end">{{ 'Date de retour' | t }}</label>
           <input id="booking-end" name="booking-end" type="date" [min]="startDate || today" [(ngModel)]="endDate" />
         </div>
       </div>
 
       <div class="modal-field">
-        <label for="booking-promo">Code promo <span class="optional-tag">(optionnel)</span></label>
+        <label for="booking-promo">{{ 'Code promo' | t }} <span class="optional-tag">({{ 'optionnel' | t }})</span></label>
         <input
           id="booking-promo"
           name="booking-promo"
@@ -78,7 +78,7 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="M4 12a8 8 0 1 1 3.2 6.4L4 20l1.1-3.5A7.96 7.96 0 0 1 4 12Z" />
         </svg>
-        {{ submitting ? 'Envoi en cours...' : 'Réserver sur WhatsApp' }}
+        {{ (submitting ? 'Envoi en cours...' : 'Réserver sur WhatsApp') | t }}
       </button>
     </div>
   </div>

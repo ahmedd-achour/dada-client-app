@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 import { waLink } from '../../shared/business-info';
 import { BookingModalService } from '../../shared/booking-modal.service';
+import { TranslatePipe } from '../../shared/i18n/translate.pipe';
 
 @Component({
   selector: 'app-hero',
+  imports: [TranslatePipe],
   templateUrl: './hero.html',
   styleUrl: './hero.css',
 })

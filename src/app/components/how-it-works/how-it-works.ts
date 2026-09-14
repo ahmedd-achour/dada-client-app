@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { TranslatePipe } from '../../shared/i18n/translate.pipe';
 
 interface Step {
   number: string;
@@ -9,6 +10,7 @@ interface Step {
 
 @Component({
   selector: 'app-how-it-works',
+  imports: [TranslatePipe],
   templateUrl: './how-it-works.html',
   styleUrl: './how-it-works.css',
 })

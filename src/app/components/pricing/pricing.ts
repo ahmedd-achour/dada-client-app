@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { TranslatePipe } from '../../shared/i18n/translate.pipe';
 
 interface PricingTier {
   name: string;
@@ -10,6 +11,7 @@ interface PricingTier {
 
 @Component({
   selector: 'app-pricing',
+  imports: [TranslatePipe],
   templateUrl: './pricing.html',
   styleUrl: './pricing.css',
 })

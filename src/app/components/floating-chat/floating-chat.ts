@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { waLink } from '../../shared/business-info';
+import { TranslatePipe } from '../../shared/i18n/translate.pipe';
 
 @Component({
   selector: 'app-floating-chat',
+  imports: [TranslatePipe],
   templateUrl: './floating-chat.html',
   styleUrl: './floating-chat.css',
 })

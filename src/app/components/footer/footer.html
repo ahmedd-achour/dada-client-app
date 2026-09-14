@@ -3,7 +3,7 @@
     <div class="footer-grid">
       <div class="footer-brand">
         <img src="assets/logo.png" alt="Dada Rent Car" class="footer-logo" />
-        <p>Location de voitures à Tunis. Réservez votre véhicule sur WhatsApp et prenez la route.</p>
+        <p>{{ 'Location de voitures à Tunis. Réservez votre véhicule sur WhatsApp et prenez la route.' | t }}</p>
         <div class="social-row">
           <a [href]="info.facebook" target="_blank" rel="noopener" aria-label="Facebook">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -24,14 +24,14 @@
         </div>
       </div>
       <div class="footer-col">
-        <h4>Entreprise</h4>
-        <a href="#top">Accueil</a>
-        <a href="#fleet">Flotte</a>
-        <a href="#pricing">Tarifs</a>
-        <a href="#contact">Contact</a>
+        <h4>{{ 'Entreprise' | t }}</h4>
+        <a href="#top">{{ 'Accueil' | t }}</a>
+        <a href="#fleet">{{ 'Flotte' | t }}</a>
+        <a href="#pricing">{{ 'Tarifs' | t }}</a>
+        <a href="#contact">{{ 'Contact' | t }}</a>
       </div>
       <div class="footer-col">
-        <h4>Contact</h4>
+        <h4>{{ 'Contact' | t }}</h4>
         <a [href]="'tel:' + info.phone">{{ info.phone }}</a>
         <a [href]="'mailto:' + info.email">{{ info.email }}</a>
         <span class="footer-address">{{ info.address }}</span>
@@ -39,14 +39,14 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© {{ year }} Dada Rent Car — une marque FaceMoney.</span>
+      <span>© {{ year }} {{ 'Dada Rent Car — une marque FaceMoney.' | t }}</span>
       <span>
-        <a href="#">Confidentialité</a> &nbsp;·&nbsp; <a href="#">Conditions</a> &nbsp;·&nbsp;
-        <a routerLink="/admin/login" class="admin-access" title="Espace admin">
+        <a href="#">{{ 'Confidentialité' | t }}</a> &nbsp;·&nbsp; <a href="#">{{ 'Conditions' | t }}</a> &nbsp;·&nbsp;
+        <a routerLink="/admin/login" class="admin-access" [attr.title]="'Espace admin' | t">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" />
           </svg>
-          Admin
+          {{ 'Admin' | t }}
         </a>
       </span>
     </div>

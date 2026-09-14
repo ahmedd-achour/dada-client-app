@@ -6,10 +6,11 @@ import { waLink } from '../../shared/business-info';
 import { AttemptsService } from '../../shared/attempts.service';
 import { AlertService } from '../../shared/alert.service';
 import { VehiclePicker } from '../vehicle-picker/vehicle-picker';
+import { TranslatePipe } from '../../shared/i18n/translate.pipe';
 
 @Component({
   selector: 'app-booking-modal',
-  imports: [FormsModule, VehiclePicker],
+  imports: [FormsModule, VehiclePicker, TranslatePipe],
   templateUrl: './booking-modal.html',
   styleUrl: './booking-modal.css',
 })

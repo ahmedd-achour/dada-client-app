@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { BUSINESS_INFO, waLink } from '../../shared/business-info';
+import { TranslatePipe } from '../../shared/i18n/translate.pipe';
 
 @Component({
   selector: 'app-footer',
-  imports: [RouterLink],
+  imports: [RouterLink, TranslatePipe],
   templateUrl: './footer.html',
   styleUrl: './footer.css',
 })

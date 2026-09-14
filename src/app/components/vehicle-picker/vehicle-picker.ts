@@ -1,8 +1,10 @@
 import { Component, ElementRef, EventEmitter, HostListener, Input, Output, ViewChild } from '@angular/core';
 import { FLEET_CATEGORIES, FleetCategory } from '../../shared/fleet-categories';
+import { TranslatePipe } from '../../shared/i18n/translate.pipe';
 
 @Component({
   selector: 'app-vehicle-picker',
+  imports: [TranslatePipe],
   templateUrl: './vehicle-picker.html',
   styleUrl: './vehicle-picker.css',
 })

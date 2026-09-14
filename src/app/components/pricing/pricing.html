@@ -1,34 +1,33 @@
 <section class="section-pad" id="pricing">
   <div class="wrap">
     <div class="section-head">
-      <h2>Un tarif dégressif selon la durée</h2>
+      <h2>{{ 'Un tarif dégressif selon la durée' | t }}</h2>
       <p>
-        Le prix par jour dépend de la catégorie choisie (voir la flotte ci-dessus) et diminue avec la durée de
-        location.
+        {{ 'Le prix par jour dépend de la catégorie choisie (voir la flotte ci-dessus) et diminue avec la durée de location.' | t }}
       </p>
     </div>
     <div class="pricing-grid">
       @for (tier of tiers; track tier.name) {
         <div class="price-card" [class.featured]="tier.featured">
           <div class="price-top">
-            <span class="price-name">{{ tier.name }}</span>
+            <span class="price-name">{{ tier.name | t }}</span>
             @if (tier.badge) {
-              <span class="price-badge">{{ tier.badge }}</span>
+              <span class="price-badge">{{ tier.badge | t }}</span>
             }
           </div>
-          <p class="price-tagline">{{ tier.tagline }}</p>
+          <p class="price-tagline">{{ tier.tagline | t }}</p>
           <ul class="price-list">
             @for (feature of tier.features; track feature) {
               <li>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M20 6L9 17l-5-5" />
                 </svg>
-                {{ feature }}
+                {{ feature | t }}
               </li>
             }
           </ul>
           <a class="btn btn-block" [class.btn-onprimary]="tier.featured" [class.btn-ghost]="!tier.featured" href="#fleet">
-            Voir les véhicules
+            {{ 'Voir les véhicules' | t }}
           </a>
         </div>
       }

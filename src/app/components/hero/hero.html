@@ -2,18 +2,17 @@
   <div class="hero-grid">
     <div class="hero-copy">
       <div class="hero-copy-inner">
-        <span class="eyebrow">Réservation simple. Sans paperasse.</span>
-        <h1>Louez votre voiture, confirmez sur WhatsApp, prenez la route.</h1>
+        <span class="eyebrow">{{ 'Réservation simple. Sans paperasse.' | t }}</span>
+        <h1>{{ 'Louez votre voiture, confirmez sur WhatsApp, prenez la route.' | t }}</h1>
         <p class="lede">
-          Choisissez votre véhicule, échangez avec notre équipe sur WhatsApp, et récupérez les clés à l'agence
-          d'Aouina ou à l'aéroport Tunis-Carthage.
+          {{ "Choisissez votre véhicule, échangez avec notre équipe sur WhatsApp, et récupérez les clés à l'agence d'Aouina ou à l'aéroport Tunis-Carthage." | t }}
         </p>
         <div class="hero-actions">
           <button type="button" class="btn btn-primary btn-lg" (click)="openBooking()">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
               <path d="M8 7V3m8 4V3M4 11h16M6 5h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" />
             </svg>
-            Réserver 
+            {{ 'Réserver' | t }}
           </button>
          <a class="btn btn-ghost btn-lg" [href]="whatsappLink" target="_blank" rel="noopener" style="color: green; border: 2px solid green; background-color: transparent; display: inline-flex; align-items: center; gap: 8px; text-decoration: none;">
   <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
@@ -28,27 +27,27 @@
               <path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3Z" />
               <path d="M9 12l2 2 4-4" />
             </svg>
-            Sans frais cachés
+            {{ 'Sans frais cachés' | t }}
           </div>
           <div class="trust-item">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
               <path d="M20 11a8 8 0 1 0-2.3 5.6" />
               <path d="M20 5v6h-6" />
             </svg>
-            Annulation gratuite
+            {{ 'Annulation gratuite' | t }}
           </div>
           <div class="trust-item">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
               <path d="M4 12a8 8 0 1 1 3.2 6.4L4 20l1.1-3.5A7.96 7.96 0 0 1 4 12Z" />
             </svg>
-            Assistance 7j/7 sur WhatsApp
+            {{ 'Assistance 7j/7 sur WhatsApp' | t }}
           </div>
         </div>
       </div>
     </div>
 
     <div class="hero-art">
-      <img class="hero-photo" src="assets/agency-office.png" alt="Agence Dada Rent Car" />
+      <img class="hero-photo" src="assets/agency-office.png" [attr.alt]="'Agence Dada Rent Car' | t" />
     </div>
   </div>
 </section>

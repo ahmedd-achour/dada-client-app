@@ -4,10 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { FLEET_CATEGORIES } from '../../shared/fleet-categories';
 import { FleetService, FleetVehicleDoc } from '../../shared/fleet.service';
 import { BookingModalService } from '../../shared/booking-modal.service';
+import { TranslatePipe } from '../../shared/i18n/translate.pipe';
 
 @Component({
   selector: 'app-fleet',
-  imports: [FormsModule],
+  imports: [FormsModule, TranslatePipe],
   templateUrl: './fleet.html',
   styleUrl: './fleet.css',
 })

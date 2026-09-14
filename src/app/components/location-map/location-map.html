@@ -2,8 +2,8 @@
   <div class="wrap location-inner">
     <div class="location-content">
       <div class="section-head location-head">
-        <h2>Où nous trouver</h2>
-        <p>Notre agence est ouverte 7j/7, en plein cœur d'Aouina.</p>
+        <h2>{{ 'Où nous trouver' | t }}</h2>
+        <p>{{ "Notre agence est ouverte 7j/7, en plein cœur d'Aouina." | t }}</p>
       </div>
       <div class="location-details">
         <div class="detail-item">
@@ -14,7 +14,7 @@
             </svg>
           </div>
           <div>
-            <span class="detail-label">Adresse</span>
+            <span class="detail-label">{{ 'Adresse' | t }}</span>
             <span class="detail-value">{{ info.address }}</span>
           </div>
         </div>
@@ -26,7 +26,7 @@
             </svg>
           </div>
           <div>
-            <span class="detail-label">Horaires</span>
+            <span class="detail-label">{{ 'Horaires' | t }}</span>
             <span class="detail-value">{{ info.hours }}</span>
           </div>
         </div>
@@ -37,7 +37,7 @@
             </svg>
           </div>
           <div>
-            <span class="detail-label">Téléphone</span>
+            <span class="detail-label">{{ 'Téléphone' | t }}</span>
             <a class="detail-value detail-link" [href]="'tel:' + info.phone">{{ info.phone }}</a>
           </div>
         </div>
@@ -46,7 +46,7 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="M3 11l18-8-8 18-2-8-8-2Z" />
         </svg>
-        Itinéraire
+        {{ 'Itinéraire' | t }}
       </a>
     </div>
     <div class="location-map">
@@ -54,7 +54,7 @@
         [src]="mapEmbedUrl"
         loading="lazy"
         referrerpolicy="no-referrer-when-downgrade"
-        title="Localisation Dada Rent Car — Aouina, Tunis"
+        [attr.title]="'Localisation Dada Rent Car — Aouina, Tunis' | t"
       ></iframe>
     </div>
   </div>
