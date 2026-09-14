@@ -1,48 +1,6 @@
 <section class="section-pad fleet" id="fleet">
   <div class="wrap">
-    <div class="section-head">
-      <h2>Notre flotte</h2>
-      <p>{{ totalUnits() }}+ véhicules disponibles, de la citadine économique à la berline de luxe.</p>
-    </div>
-
-    <div class="fleet-subhead">
-      <h3>Choisissez votre catégorie</h3>
-      <p>De la citadine économique au véhicule de luxe, toute la flotte assurée.</p>
-    </div>
-    <div class="fleet-grid">
-      @for (category of categories; track category.name) {
-        <div class="fleet-cat-card">
-          <div class="fleet-cat-media">
-            <img [src]="category.image" [alt]="category.name" loading="lazy" />
-            <span class="fleet-badge">{{ category.badge }}</span>
-          </div>
-          <div class="fleet-cat-body">
-            <div class="fleet-name">{{ category.name }}</div>
-            <div class="fleet-specs">
-              <span>
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="8" r="3.2" />
-                  <path d="M5 20c0-4 3.1-6.5 7-6.5s7 2.5 7 6.5" />
-                </svg>
-                {{ category.seats }} places
-              </span>
-              <span>
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="8" />
-                  <path d="M12 12l4-2.4" />
-                </svg>
-                {{ category.transmission }}
-              </span>
-            </div>
-            <div class="fleet-foot">
-              <div class="fleet-price"><span class="amount">{{ category.priceLabel }}</span> <span class="unit">/ jour</span></div>
-              <button type="button" class="btn btn-primary btn-sm" (click)="reserve(category.name)">Réserver</button>
-            </div>
-          </div>
-        </div>
-      }
-    </div>
-
+    
     <div class="fleet-subhead fleet-subhead-search">
       <h3>Toute la flotte, véhicule par véhicule</h3>
       <p>Recherchez un modèle précis, ou laissez défiler pour découvrir toute la gamme.</p>
@@ -131,5 +89,45 @@
         </div>
       </div>
     }
+    
+
+    <div class="fleet-subhead">
+      <h3>Choisissez votre catégorie</h3>
+      <p>De la citadine économique au véhicule de luxe, toute la flotte assurée.</p>
+    </div>
+    <div class="fleet-grid">
+      @for (category of categories; track category.name) {
+        <div class="fleet-cat-card">
+          <div class="fleet-cat-media">
+            <img [src]="category.image" [alt]="category.name" loading="lazy" />
+            <span class="fleet-badge">{{ category.badge }}</span>
+          </div>
+          <div class="fleet-cat-body">
+            <div class="fleet-name">{{ category.name }}</div>
+            <div class="fleet-specs">
+              <span>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="8" r="3.2" />
+                  <path d="M5 20c0-4 3.1-6.5 7-6.5s7 2.5 7 6.5" />
+                </svg>
+                {{ category.seats }} places
+              </span>
+              <span>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="8" />
+                  <path d="M12 12l4-2.4" />
+                </svg>
+                {{ category.transmission }}
+              </span>
+            </div>
+            <div class="fleet-foot">
+              <div class="fleet-price"><span class="amount">{{ category.priceLabel }}</span> <span class="unit">/ jour</span></div>
+              <button type="button" class="btn btn-primary btn-sm" (click)="reserve(category.name)">Réserver</button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
   </div>
 </section>
