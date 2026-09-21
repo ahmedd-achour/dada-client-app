@@ -1,4 +1,4 @@
-import { Component, Signal, computed, effect, signal } from '@angular/core';
+import { Component, Signal, computed, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -19,19 +19,8 @@ import { CloudinaryService } from '../../shared/cloudinary.service';
 import { VehiclePicker } from '../../components/vehicle-picker/vehicle-picker';
 import { AttemptChat } from '../attempt-chat/attempt-chat';
 
+type Section = 'docs' | 'actions' | 'ai';
 type Panel = 'none' | 'vehicle' | 'dates' | 'status';
-type CardKey = 'vehicle' | 'dates' | 'status' | 'cancel';
-
-const CARD_HELP: Record<CardKey, string> = {
-  vehicle:
-    "Change la voiture réservée pour ce client. Choisissez le nouveau véhicule dans la liste : c'est enregistré tout de suite, le reste de la réservation ne bouge pas.",
-  dates:
-    "Modifie les dates de départ ou de retour, par exemple pour prolonger le séjour du client. Utilisez les boutons +1/+7/+30 jours pour aller plus vite.",
-  status:
-    "Montre où en est cette réservation (nouvelle, confirmée, en cours, terminée, annulée) et permet de la changer en un clic. Utile pour suivre les dossiers en cours d'un coup d'œil.",
-  cancel:
-    "Annule cette réservation : le client est marqué comme annulé. Ce n'est pas définitif — vous pouvez toujours revenir en arrière avec la carte Statut.",
-};
 
 const ASSET_KINDS: AssetKind[] = ['contractDocs', 'receiptDocs', 'departureVideos', 'returnVideos', 'vehicleDocs', 'clientDocs'];
 
@@ -55,6 +44,8 @@ export class AttemptDetail {
   private readonly id: string;
   private readonly attemptSignal: Signal<Attempt | null>;
 
+  protected readonly section = signal<Section>('actions');
+
   protected readonly activePanel = signal<Panel>('none');
   protected readonly editCategory = signal('');
   protected readonly editStart = signal('');
@@ -64,8 +55,6 @@ export class AttemptDetail {
   protected readonly uploading = signal<AssetKind | null>(null);
   protected readonly uploadingHistoryFile = signal(false);
   protected readonly isRecordingVoice = signal(false);
-  protected readonly flippedCard = signal<CardKey | null>(null);
-  protected readonly cardHelp = CARD_HELP;
 
   protected readonly aiConfigured: boolean;
   
@@ -122,9 +111,21 @@ export class AttemptDetail {
     this.activePanel.set('none');
   }
 
-  protected toggleInfo(key: CardKey, event: Event): void {
-    event.stopPropagation();
-    this.flippedCard.set(this.flippedCard() === key ? null : key);
+  protected initials(name: string): string {
+    const parts = name.trim().split(/\s+/).filter(Boolean);
+    return ((parts[0]?.[0] ?? '') + (parts.length > 1 ? parts[parts.length - 1][0] : '')).toUpperCase() || '?';
+  }
+
+  /** Rental length in days, counting both the pickup and return day (min 1). */
+  protected durationDays(attempt: Attempt): number {
+    const start = Date.parse(attempt.startDate);
+    const end = Date.parse(attempt.endDate);
+    if (Number.isNaN(start) || Number.isNaN(end) || end < start) return 1;
+    return Math.round((end - start) / 86_400_000) + 1;
+  }
+
+  protected docsCount(attempt: Attempt): number {
+    return ASSET_KINDS.reduce((total, kind) => total + attempt[kind].length, 0);
   }
 
   protected async saveDates(): Promise<void> {

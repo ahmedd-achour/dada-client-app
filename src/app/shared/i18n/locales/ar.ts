@@ -142,6 +142,29 @@ export const ar: Record<string, string> = {
   Confidentialité: 'الخصوصية',
   Conditions: 'الشروط',
 
+  // Promo banner
+  "À découvrir : le tableau des tarifs d'aujourd'hui": 'اكتشف: جدول أسعار اليوم',
+  'Réductions dégressives jusqu\'à -12 % selon la durée': 'تخفيضات تنازلية تصل إلى -12% حسب مدة الحجز',
+  Découvrir: 'اكتشف',
+
+  // Tarifs du jour page
+  "Retour à l'accueil": 'العودة إلى الرئيسية',
+  'Tarifs de toute la flotte': 'أسعار كامل الأسطول',
+  "Aujourd'hui": 'اليوم',
+  'Le prix par jour diminue automatiquement selon la durée choisie — sans code promo à demander.':
+    'ينخفض السعر اليومي تلقائيًا حسب المدة المختارة — بدون الحاجة لرمز ترويجي.',
+  'Luxe, 4x4 & 7 places': 'فخامة، 4x4 و7 مقاعد',
+  'Standard, 4x4 & 7 places': 'عادية، 4x4 و7 مقاعد',
+  'Aucun véhicule disponible pour le moment.': 'لا توجد سيارة متوفرة حاليًا.',
+  '3 jours': '3 أيام',
+  '10 jours': '10 أيام',
+  '15 jours': '15 يومًا',
+  'Assurance tous risques incluse': 'تأمين شامل مضمّن',
+  'Livraison aéroport 24h/24': 'توصيل إلى المطار على مدار الساعة',
+  'Assistance 7j/7': 'مساعدة طوال أيام الأسبوع',
+  'Carburant selon le niveau au retrait': 'الوقود حسب المستوى عند الاستلام',
+  'Voir tous les véhicules': 'عرض جميع السيارات',
+
   // Booking modal
   Fermer: 'إغلاق',
   'Réservation rapide': 'حجز سريع',

@@ -85,26 +85,18 @@
   padding: 20px clamp(16px, 4vw, 40px) calc(96px + env(safe-area-inset-bottom));
 }
 
-.fab {
-  position: fixed;
-  right: 20px;
-  bottom: calc(78px + env(safe-area-inset-bottom));
-  z-index: 25;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: linear-gradient(150deg, var(--primary), var(--primary-dark));
-  color: #fff;
+.admin-bar-actions {
   display: flex;
   align-items: center;
-  justify-content: center;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  gap: 10px;
 }
 
-.fab:hover {
-  transform: translateY(-2px) scale(1.04);
-  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.32);
+.new-btn {
+  box-shadow: 0 6px 16px rgba(var(--primary-rgb), 0.28);
+}
+
+.new-btn-short {
+  display: none;
 }
 
 .tab-bar {
@@ -153,6 +145,18 @@
 @media (max-width: 640px) {
   .admin-brand span {
     display: none;
+  }
+
+  .new-btn-long {
+    display: none;
+  }
+
+  .new-btn-short {
+    display: inline;
+  }
+
+  .admin-bar-actions .btn {
+    padding: 9px 14px;
   }
 }
 

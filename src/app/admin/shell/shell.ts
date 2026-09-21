@@ -12,6 +12,7 @@ import { AuthService } from '../auth.service';
 })
 export class AdminShell {
   protected readonly isDetailView;
+  protected readonly isNewForm;
 
   constructor(
     protected readonly authService: AuthService,
@@ -22,8 +23,11 @@ export class AdminShell {
       { initialValue: null },
     );
 
+    const currentUrl = computed(() => navigationEnd()?.urlAfterRedirects ?? this.router.url);
+    this.isNewForm = computed(() => /^\/admin\/new(?:[/?#]|$)/.test(currentUrl()));
+
     this.isDetailView = computed(() => {
-      const url = navigationEnd()?.urlAfterRedirects ?? this.router.url;
+      const url = currentUrl();
       const match = /^\/admin\/([^/?]+)(?:\/([^/?]+))?/.exec(url);
       if (!match) return false;
       const [, firstSegment, secondSegment] = match;

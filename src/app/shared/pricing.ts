@@ -11,7 +11,7 @@ export function daysBetween(startDate: string, endDate: string): number {
   return Math.max(diff, 0);
 }
 
-function discountForDays(days: number): number {
+export function discountForDays(days: number): number {
   if (days >= 30) {
     return 12;
   }
@@ -19,6 +19,13 @@ function discountForDays(days: number): number {
     return 8;
   }
   return 0;
+}
+
+/** Total + per-day price for a given daily rate and duration, degressive rate applied — same discount table as `calculatePricing`. */
+export function priceForDuration(dailyRate: number, days: number): { total: number; perDay: number; discountPct: number } {
+  const discountPct = dailyRate ? discountForDays(days) : 0;
+  const total = Math.round(dailyRate * days * (1 - discountPct / 100));
+  return { total, perDay: Math.round(total / days), discountPct };
 }
 
 export function calculatePricing(categoryName: string, startDate: string, endDate: string): AttemptPricing {

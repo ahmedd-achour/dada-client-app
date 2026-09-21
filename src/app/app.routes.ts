@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { Landing } from './pages/landing/landing';
+import { TarifsDuJour } from './pages/tarifs-du-jour/tarifs-du-jour';
 import { AdminLogin } from './admin/login/login';
 import { AdminShell } from './admin/shell/shell';
 import { Dashboard } from './admin/dashboard/dashboard';
@@ -13,6 +14,7 @@ import { authGuard } from './admin/auth.guard';
 
 export const routes: Routes = [
   { path: '', component: Landing },
+  { path: 'tarifs-du-jour', component: TarifsDuJour },
   { path: 'admin/login', component: AdminLogin },
   {
     path: 'admin',

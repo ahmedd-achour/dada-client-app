@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Navbar } from '../../components/navbar/navbar';
+import { PromoBanner } from '../../components/promo-banner/promo-banner';
 import { Hero } from '../../components/hero/hero';
 import { HowItWorks } from '../../components/how-it-works/how-it-works';
 import { Fleet } from '../../components/fleet/fleet';
@@ -16,6 +17,7 @@ import { BookingModal } from '../../components/booking-modal/booking-modal';
   selector: 'app-landing',
   imports: [
     Navbar,
+    PromoBanner,
     Hero,
     HowItWorks,
     Fleet,

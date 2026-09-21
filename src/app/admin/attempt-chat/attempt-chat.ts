@@ -4,7 +4,6 @@ import {
   OnInit,
   OnDestroy,
   signal,
-  computed,
   ViewChild,
   ElementRef,
   AfterViewChecked,
@@ -15,6 +14,7 @@ import { Attempt } from '../../shared/attempt.model';
 import { AttemptChatService, ChatMessage } from '../../shared/attempt-chat.service';
 import { AlertService } from '../../shared/alert.service';
 
+/** Inline assistant scoped to one reservation — lives in the "IA" tab of the reservation detail. */
 @Component({
   selector: 'app-attempt-chat',
   imports: [CommonModule, FormsModule],
@@ -29,11 +29,7 @@ export class AttemptChat implements OnInit, OnDestroy, AfterViewChecked {
   protected readonly inputText = signal('');
   protected readonly isLoading = signal(false);
   protected readonly isListening = signal(false);
-  protected readonly isOpen = signal(false);
 
-  protected readonly hasMessages = computed(() => this.messages().length > 0);
-
-  private systemContext = '';
   private recognition: SpeechRecognition | null = null;
   private shouldScrollToBottom = false;
 
@@ -53,7 +49,7 @@ export class AttemptChat implements OnInit, OnDestroy, AfterViewChecked {
   ) {}
 
   ngOnInit(): void {
-    this.systemContext = this.chatService.buildSystemContext(this.attempt);
+    this.resetConversation();
   }
 
   ngOnDestroy(): void {
@@ -64,21 +60,6 @@ export class AttemptChat implements OnInit, OnDestroy, AfterViewChecked {
     if (this.shouldScrollToBottom) {
       this.scrollToBottom();
       this.shouldScrollToBottom = false;
-    }
-  }
-
-  protected toggle(): void {
-    this.isOpen.update(v => !v);
-    if (this.isOpen() && !this.hasMessages()) {
-      // Auto-welcome message
-      this.messages.set([
-        {
-          role: 'model',
-          text: `Bonjour ! Je suis votre assistant IA pour la réservation de **${this.attempt.customerName}**.\n\nJe connais toutes les données de ce dossier : documents, vidéos, historique, prix, etc. Posez-moi vos questions !`,
-          timestamp: Date.now(),
-        },
-      ]);
-      this.shouldScrollToBottom = true;
     }
   }
 
@@ -93,8 +74,9 @@ export class AttemptChat implements OnInit, OnDestroy, AfterViewChecked {
     this.shouldScrollToBottom = true;
 
     try {
+      // Rebuilt on every question so answers reflect uploads/edits made since the chat opened.
       const response = await this.chatService.sendMessage(
-        this.systemContext,
+        this.chatService.buildSystemContext(this.attempt),
         this.messages().slice(0, -1), // exclude the message we just added
         msg,
       );
@@ -144,9 +126,7 @@ export class AttemptChat implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   protected clearChat(): void {
-    this.messages.set([]);
-    this.toggle();
-    setTimeout(() => this.toggle(), 10);
+    this.resetConversation();
   }
 
   /** Format markdown-like bold **text** */
@@ -154,6 +134,17 @@ export class AttemptChat implements OnInit, OnDestroy, AfterViewChecked {
     return text
       .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
       .replace(/\n/g, '<br>');
+  }
+
+  private resetConversation(): void {
+    this.messages.set([
+      {
+        role: 'model',
+        text: `Bonjour ! Je suis votre assistant IA pour la réservation de **${this.attempt.customerName}**.\n\nJe connais toutes les données de ce dossier : documents, vidéos, historique, prix, etc. Posez-moi vos questions !`,
+        timestamp: Date.now(),
+      },
+    ]);
+    this.shouldScrollToBottom = true;
   }
 
   private scrollToBottom(): void {

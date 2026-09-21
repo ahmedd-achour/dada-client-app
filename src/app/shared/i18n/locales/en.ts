@@ -142,6 +142,29 @@ export const en: Record<string, string> = {
   Confidentialité: 'Privacy',
   Conditions: 'Terms',
 
+  // Promo banner
+  "À découvrir : le tableau des tarifs d'aujourd'hui": "Check it out: today's price table",
+  'Réductions dégressives jusqu\'à -12 % selon la durée': 'Tapered discounts of up to -12% depending on duration',
+  Découvrir: 'Discover',
+
+  // Tarifs du jour page
+  "Retour à l'accueil": 'Back to home',
+  'Tarifs de toute la flotte': 'Prices for the whole fleet',
+  "Aujourd'hui": 'Today',
+  'Le prix par jour diminue automatiquement selon la durée choisie — sans code promo à demander.':
+    'The daily rate drops automatically based on the duration you choose — no promo code needed.',
+  'Luxe, 4x4 & 7 places': 'Luxury, 4x4 & 7 seats',
+  'Standard, 4x4 & 7 places': 'Standard, 4x4 & 7 seats',
+  'Aucun véhicule disponible pour le moment.': 'No vehicle available right now.',
+  '3 jours': '3 days',
+  '10 jours': '10 days',
+  '15 jours': '15 days',
+  'Assurance tous risques incluse': 'Full insurance included',
+  'Livraison aéroport 24h/24': 'Airport delivery 24/7',
+  'Assistance 7j/7': 'Support 7 days a week',
+  'Carburant selon le niveau au retrait': 'Fuel as per pick-up level',
+  'Voir tous les véhicules': 'View all vehicles',
+
   // Booking modal
   Fermer: 'Close',
   'Réservation rapide': 'Quick booking',

@@ -1,0 +1,240 @@
+.tarifs-page {
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+.tarifs-hero {
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+  color: #fff;
+  padding: 40px 0 90px;
+  text-align: center;
+}
+
+.tarifs-hero-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tarifs-back {
+  align-self: flex-start;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.tarifs-back:hover {
+  color: #fff;
+}
+
+.tarifs-hero h1 {
+  margin-top: 18px;
+  font-size: clamp(1.9rem, 4.5vw, 3rem);
+  color: #fff;
+}
+
+.tarifs-hero-highlight {
+  color: var(--amber);
+}
+
+.tarifs-hero p {
+  margin-top: 14px;
+  max-width: 540px;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.98rem;
+}
+
+.tarifs-body {
+  margin-top: -56px;
+  padding-bottom: 88px;
+}
+
+.tarifs-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.tarifs-tab {
+  padding: 12px 22px;
+  border-radius: 999px;
+  border: 1.5px solid transparent;
+  background: var(--surface);
+  color: var(--primary-dark);
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+}
+
+.tarifs-tab.active {
+  background: var(--primary-dark);
+  color: #fff;
+}
+
+.tarifs-empty {
+  text-align: center;
+  padding: 48px 16px;
+  color: var(--ink-muted);
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+}
+
+.tarifs-table-wrap {
+  overflow-x: auto;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.12);
+}
+
+.tarifs-table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+}
+
+.tarifs-table thead th {
+  background: var(--primary-dark);
+  color: #fff;
+  padding: 14px 10px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.tarifs-col-vehicle {
+  text-align: left !important;
+  min-width: 240px;
+}
+
+.tarifs-th-label {
+  line-height: 1.2;
+}
+
+.tarifs-th-discount {
+  margin-top: 4px;
+  font-size: 0.68rem;
+  color: var(--amber);
+  font-weight: 800;
+}
+
+.tarifs-table tbody tr:nth-child(even) {
+  background: var(--bg-soft);
+}
+
+.tarifs-table tbody td {
+  padding: 14px 10px;
+  border-top: 1px solid var(--line);
+  vertical-align: middle;
+}
+
+.tarifs-vehicle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tarifs-vehicle img {
+  width: 76px;
+  height: 48px;
+  object-fit: contain;
+  flex: none;
+}
+
+.tarifs-vehicle-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.tarifs-vehicle-name {
+  font-weight: 800;
+  color: var(--ink);
+  font-size: 0.92rem;
+}
+
+.tarifs-vehicle-specs {
+  font-size: 0.78rem;
+  color: var(--ink-muted);
+}
+
+.tarifs-reserve {
+  align-self: flex-start;
+  margin-top: 2px;
+}
+
+.tarifs-price-cell {
+  text-align: center;
+  white-space: nowrap;
+}
+
+.tarifs-price {
+  display: block;
+  font-weight: 800;
+  color: var(--primary-dark);
+  font-size: 1rem;
+}
+
+.tarifs-price-perday {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.7rem;
+  color: var(--ink-muted);
+}
+
+.tarifs-services {
+  margin-top: 32px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.tarifs-service {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  padding: 18px 10px;
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--primary-dark);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.tarifs-service span {
+  color: var(--ink);
+}
+
+.tarifs-actions {
+  margin-top: 36px;
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 780px) {
+  .tarifs-services {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .tarifs-hero {
+    padding: 28px 0 70px;
+  }
+
+  .tarifs-body {
+    margin-top: -44px;
+  }
+
+  .tarifs-actions .btn {
+    width: 100%;
+  }
+}
